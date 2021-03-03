@@ -5,19 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "java",
-            "name": "Launch App",
+            "name": "Python: Current File",
+            "type": "python",
             "request": "launch",
-            "mainClass": "tests.App",
-            "projectName": ""
-        },
-        {
-            "type": "java",
-            "name": "Launch App",
-            "request": "launch",
-            "mainClass": "why.App",
-            "projectName": ""
-        },
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },        
         {
             "name": "g++ - Build and debug active file",
             "type": "cppdbg",
