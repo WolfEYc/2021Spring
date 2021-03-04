@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 
@@ -40,8 +39,6 @@ public class Panel extends JPanel implements MouseListener, Runnable {
     //10=queen
     //11=king
     public void paint(Graphics g) {
-        int height = getHeight();
-        int width = getWidth();
         char notation = 'a';
         int c=0;
         int at=8;
@@ -52,30 +49,27 @@ public class Panel extends JPanel implements MouseListener, Runnable {
                 c++;
                 if(c%2!=0) {
                     g.setColor(Color.BLUE);
-                    g.fillRect(j, i, 80, 80);
                 }else {
                     g.setColor(Color.GRAY);
-                    g.fillRect(j, i, 80, 80);
 
                 }
+                g.fillRect(j, i, 80, 80);
                 int row = i/80;
                 int col = j/80;
                 int piece = thegriddy.getPiece(row,col);
-                if(row==selectedRow && col ==selectedCol && !nah){
-
-                }else {
+                if(!(row==selectedRow && col ==selectedCol && !nah)){
                     if (held && (player == 0 && pieces.whiteCanMove(thegriddy.getCurrentGrid(), selectedRow, selectedCol, row, col)) || (player == 1 && pieces.blackCanMove(thegriddy.getCurrentGrid(), selectedRow, selectedCol, row, col))) {
                         g.setColor(Color.MAGENTA);
                         g.fillRect(j, i, 80, 80);
                     }
 
                     switch (piece) {
-                        case 0 -> g.drawImage(pl, j + 8, i + 2, null);
-                        case 1 -> g.drawImage(nl, j + 8, i + 2, null);
-                        case 2 -> g.drawImage(bl, j + 8, i + 2, null);
-                        case 3 -> g.drawImage(rl, j + 8, i + 2, null);
-                        case 4 -> g.drawImage(ql, j + 8, i + 2, null);
-                        case 5 -> {
+                        case 0: g.drawImage(pl, j + 8, i + 2, null); break;
+                        case 1: g.drawImage(nl, j + 8, i + 2, null); break;
+                        case 2: g.drawImage(bl, j + 8, i + 2, null); break;
+                        case 3: g.drawImage(rl, j + 8, i + 2, null); break;
+                        case 4: g.drawImage(ql, j + 8, i + 2, null); break;
+                        case 5: {
                             if (wcheck) {
                                 g.setColor(Color.ORANGE);
                                 g.fillRect(j, i, 80, 80);
@@ -88,14 +82,14 @@ public class Panel extends JPanel implements MouseListener, Runnable {
                                 g.setColor(Color.GREEN);
                                 g.fillRect(j, i, 80, 80);
                             }
-                            g.drawImage(kl, j + 8, i + 2, null);
+                            g.drawImage(kl, j + 8, i + 2, null);  break;
                         }
-                        case 6 -> g.drawImage(pd, j + 8, i + 2, null);
-                        case 7 -> g.drawImage(nd, j + 8, i + 2, null);
-                        case 8 -> g.drawImage(bd, j + 8, i + 2, null);
-                        case 9 -> g.drawImage(rd, j + 8, i + 2, null);
-                        case 10 -> g.drawImage(qd, j + 8, i + 2, null);
-                        case 11 -> {
+                        case 6: g.drawImage(pd, j + 8, i + 2, null); break;
+                        case 7: g.drawImage(nd, j + 8, i + 2, null); break;
+                        case 8: g.drawImage(bd, j + 8, i + 2, null); break;
+                        case 9: g.drawImage(rd, j + 8, i + 2, null); break;
+                        case 10: g.drawImage(qd, j + 8, i + 2, null); break;
+                        case 11: {
                             if (bcheck) {
                                 g.setColor(Color.ORANGE);
                                 g.fillRect(j, i, 80, 80);
@@ -108,7 +102,7 @@ public class Panel extends JPanel implements MouseListener, Runnable {
                                 g.setColor(Color.GREEN);
                                 g.fillRect(j, i, 80, 80);
                             }
-                            g.drawImage(kd, j + 8, i + 2, null);
+                            g.drawImage(kd, j + 8, i + 2, null); break;
                         }
                     }
                 }
@@ -173,9 +167,6 @@ public class Panel extends JPanel implements MouseListener, Runnable {
     }
 
     int player=0;
-    public Grid getGrid(){
-        return thegriddy;
-    }
 
     private int selectedRow=-1;
     private int selectedCol=-1;
@@ -220,18 +211,18 @@ public class Panel extends JPanel implements MouseListener, Runnable {
             if ((piece > 5 && player == 1) || (piece < 6 && player == 0)) {
                 nah = false;
                 switch (piece) {
-                    case 0 -> selected = pl;
-                    case 1 -> selected = nl;
-                    case 2 -> selected = bl;
-                    case 3 -> selected = rl;
-                    case 4 -> selected = ql;
-                    case 5 -> selected = kl;
-                    case 6 -> selected = pd;
-                    case 7 -> selected = nd;
-                    case 8 -> selected = bd;
-                    case 9 -> selected = rd;
-                    case 10 -> selected = qd;
-                    case 11 -> selected = kd;
+                    case 0: selected = pl; break;
+                    case 1: selected = nl; break;
+                    case 2: selected = bl; break;
+                    case 3: selected = rl; break;
+                    case 4: selected = ql; break;
+                    case 5: selected = kl; break;
+                    case 6: selected = pd; break;
+                    case 7: selected = nd; break;
+                    case 8: selected = bd; break;
+                    case 9: selected = rd; break;
+                    case 10: selected = qd; break;
+                    case 11: selected = kd; break;
                 }
             } else {
                 nah = true;
@@ -350,8 +341,8 @@ public class Panel extends JPanel implements MouseListener, Runnable {
 
     @Override
     public void run() {
-        int waitToUpdate = 1000/60, waitToPaint = 1000/60;
-        long lastUpdate = System.nanoTime(), lastPaint = System.nanoTime();
+        int waitToPaint = 1000/60;
+        long lastPaint = System.nanoTime();
 
         while(true) {
 //            int updatesNeeded = ((int) (System.nanoTime() - lastUpdate)/1000000)/waitToUpdate;
@@ -367,8 +358,11 @@ public class Panel extends JPanel implements MouseListener, Runnable {
                 lastPaint = System.nanoTime();
             }
 
-            try { Thread.sleep(5); }
-            catch(Exception e) { System.out.println("Error sleeping in run method: " + e.getMessage()); }
+            try {
+                Thread.sleep(5);
+            } catch(Exception e) {
+                System.out.println("Error sleeping in run method: " + e.getMessage());
+            }
         }
     }
 }

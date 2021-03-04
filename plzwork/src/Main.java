@@ -14,7 +14,7 @@ public class Main
 
     public static void main(String[] args) {
 
-        ImageIcon img = new ImageIcon("src/resources/Chess_qlt60.png");
+        ImageIcon img = new ImageIcon("/resources/Chess_qlt60.png");
         JFrame frame = new JFrame("Chess");
         frame.setIconImage(img.getImage());
 
@@ -37,6 +37,6 @@ public class Main
         //beans
 
         //0=white 1=black 2=whitewins 3=blackwins
-    }    
+    }
 }
 
