@@ -7,32 +7,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d73e02d8-3189-48bb-a866-616415a6b654" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/plzwork_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/plzwork.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Grid.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Panel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Pieces.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_bdt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_blt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_kdt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_klt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_ndt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_nlt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_pdt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_plt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_qdt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_qlt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_rdt60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/Chess_rlt60.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../csharpfun/test.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/plzwork_jar/plzwork.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/plzwork_jar/plzwork.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/plzwork/Grid.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/plzwork/Grid.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/plzwork/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/plzwork/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/plzwork/Panel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/plzwork/Panel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Grid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Grid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Panel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Panel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +45,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
@@ -101,6 +84,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

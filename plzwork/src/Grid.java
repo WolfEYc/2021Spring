@@ -30,7 +30,6 @@ public class Grid
     public int[][] getCurrentGrid(){
         return grid;
     }
-    public void setfullGrid(int[][]newgrid){grid = newgrid; }
     
     public void printGrid(int[][] grid){
         System.out.println("    0   1   2   3   4   5   6   7");

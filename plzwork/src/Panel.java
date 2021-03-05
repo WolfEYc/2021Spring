@@ -228,8 +228,6 @@ public class Panel extends JPanel implements MouseListener, Runnable {
                 nah = true;
             }
         }
-
-
     }
 
     @Override
@@ -345,13 +343,8 @@ public class Panel extends JPanel implements MouseListener, Runnable {
         long lastPaint = System.nanoTime();
 
         while(true) {
-//            int updatesNeeded = ((int) (System.nanoTime() - lastUpdate)/1000000)/waitToUpdate;
-            int framesNeeded = ((int) (System.nanoTime() - lastPaint)/1000000)/waitToPaint;
 
-//            for(int x = 0; x < updatesNeeded; x++) {
-//                update();
-//                lastUpdate = System.nanoTime();
-//            }
+            int framesNeeded = ((int) (System.nanoTime() - lastPaint)/1000000)/waitToPaint;
 
             if(framesNeeded >= 1) {
                 repaint();

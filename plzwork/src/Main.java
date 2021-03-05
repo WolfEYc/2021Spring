@@ -14,7 +14,7 @@ public class Main
 
     public static void main(String[] args) {
 
-        ImageIcon img = new ImageIcon("/resources/Chess_qlt60.png");
+        ImageIcon img = new ImageIcon("~/Icons/Chess_qlt60.png");
         JFrame frame = new JFrame("Chess");
         frame.setIconImage(img.getImage());
 
