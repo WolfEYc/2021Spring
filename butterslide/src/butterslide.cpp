@@ -214,7 +214,6 @@ void trailadding(){
     butter.setFillColor(sf::Color::Yellow);
     butter.setOutlineThickness(2);
 }
-//HAHAHAH MINES BETTER
 
 void addnEraseBlocks(){
     float latest = 900.f;
