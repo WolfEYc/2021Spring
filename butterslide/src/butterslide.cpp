@@ -133,7 +133,7 @@ bool collide(){
         if(butter.getGlobalBounds().intersects(blocks[i].getGlobalBounds())){                
             if(dy<0)
                 dy=5;
-            window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
+            window.setPosition(sf::Vector2i(defaultXPos + rand() % 5, defaultYPos + rand() % 5));
             return true;
         }            
     }
