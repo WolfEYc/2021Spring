@@ -185,7 +185,7 @@ void physics(bool collision){
         else if (dx<0)
             dx+=.1;
         if(dy<8 ){
-            dy+=.3;
+            dy+=.5;
         
             //y+=5;
         }
@@ -196,7 +196,7 @@ void physics(bool collision){
         if(dy>-8 && !collision )
             dy-=.5;
         else{
-            dy+=.3;
+            dy+=.5;
             //y+=5;
         }
     }else{
@@ -206,7 +206,7 @@ void physics(bool collision){
         if(dy>-8 && !collision)
             dy-=.5;
         else{
-            dy+=.3;
+            dy+=.5;
             //y+=5;
         }
     }
@@ -219,6 +219,9 @@ void physics(bool collision){
     
     //changing butter position and distance
     butter.setPosition(x+=dx, y+=dy);
+    if(collision){
+        butter.setPosition(x+=dx, y+=dy+5);
+    }
     distance = intitaly-y;
 
     //update score
@@ -255,7 +258,7 @@ void updateBlocks(){
         blocks.push_back(block);
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
-        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy));
+        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+5);
         if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
