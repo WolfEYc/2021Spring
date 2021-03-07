@@ -176,7 +176,7 @@ void endScreen(){
     window.display();
 }
 
-void physics(){
+void physics(bool collision){
     //do da physics
     if(input == 0){
         butter.setRotation(0);
@@ -184,30 +184,30 @@ void physics(){
             dx-=.1;
         else if (dx<0)
             dx+=.1;
-        if(dy<8 && !collide())
+        if(dy<8 ){
             dy+=.3;
-        else{
-            y+=5;
+        
+            //y+=5;
         }
     }else if (input == 1){
         butter.setRotation(-15.f);
-        if(dx>-8 && !collide() )
+        if(dx>-8 && !collision )
             dx-=.8;
-        if(dy>-8 && !collide() )
+        if(dy>-8 && !collision )
             dy-=.5;
         else{
             dy+=.3;
-            y+=5;
+            //y+=5;
         }
     }else{
         butter.setRotation(15.f);
-        if(dx<8 && !collide())
+        if(dx<8 && !collision)
             dx+=.8;
-        if(dy>-8 && !collide())
+        if(dy>-8 && !collision)
             dy-=.5;
         else{
             dy+=.3;
-            y+=5;
+            //y+=5;
         }
     }
     //wall side to side collision
@@ -255,7 +255,7 @@ void updateBlocks(){
         blocks.push_back(block);
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
-        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+5);
+        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy));
         if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
@@ -326,7 +326,7 @@ int main()
         }
 
         
-        physics();
+        physics(collide());
         //adds and erases the red blocks
         updateBlocks();
 
