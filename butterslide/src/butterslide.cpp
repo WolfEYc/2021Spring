@@ -323,7 +323,5 @@ int main()
         //displays the current frame
         window.display();
     }
-
-    //bean burrito
     return 0;
 }
