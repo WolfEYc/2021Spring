@@ -10,11 +10,13 @@ sf::RectangleShape grayblock1;
 sf::RectangleShape grayblock2;
 sf::RectangleShape butter;
 sf::RectangleShape newGameButton;
+sf::RectangleShape StarTrail;
 
 //colors
 sf::Color gray(150, 150, 150);
 sf::Color background(0,0,0); 
 sf::Color trailcolor(255,255,0);
+
 
 //fonts & text
 sf::Font font;
@@ -45,6 +47,8 @@ int score = 0;
 
 //window construction
 sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
+int defaultXPos = (sf::VideoMode::getDesktopMode().width)/2-300;
+int defaultYPos = (sf::VideoMode::getDesktopMode().height)/2-400;
 
 //view construction
 sf::View view2(sf::Vector2f(x, y), sf::Vector2f(600.f, 800.f));
@@ -114,18 +118,22 @@ void init(){
     window.setView(view2);
     window.clear(background);    
 
-
     //clearing prev vectors
     blocks.clear();
     powerups.clear();
     trail.clear();
+
+    //Screen Position
+    window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
 }
 
 bool collide(){
+    
     for(long unsigned int i = 0;i<blocks.size();i++){
         if(butter.getGlobalBounds().intersects(blocks[i].getGlobalBounds())){                
             if(dy<0)
                 dy=5;
+            window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
             return true;
         }            
     }
@@ -197,13 +205,7 @@ void physics(){
         score=distance;
 
     //shift background color
-    if(background.b<200)
-        background.b+=dy/8;
-    else if (background.r<200)
-        background.r+=dy/8;
-    else if (background.g<200)
-        background.g+=dy/8;
-    
+
 }
 
 void trailadding(){
@@ -221,11 +223,16 @@ void addnEraseBlocks(){
         if(blocks[i].getPosition().y<latest)
             latest = blocks[i].getPosition().y;
     }
+    if(1==1)
+    {
+
+    }
     if(((tan(distance/(cos(distance)+difficulty_scale)))>2.5) && latest > view2.getCenter().y-300){
         sf::RectangleShape block;
         block.setSize(sf::Vector2f(200+rand()%50,5));
-        block.setFillColor(sf::Color::Red);
-        block.setOutlineColor(sf::Color::White);
+        sf::Color BlockRed(score/30, 0, 63);
+        block.setFillColor(BlockRed);
+        block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
         block.setPosition(rand()%500-50,view2.getCenter().y-400);
         blocks.push_back(block);
