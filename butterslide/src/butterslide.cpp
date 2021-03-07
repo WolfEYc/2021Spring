@@ -12,11 +12,13 @@ sf::RectangleShape grayblock1;
 sf::RectangleShape grayblock2;
 sf::RectangleShape butter;
 sf::RectangleShape newGameButton;
+sf::RectangleShape StarTrail;
 
 //colors
 sf::Color gray(150, 150, 150);
-sf::Color backround(0,0,0); 
+sf::Color background(0,0,0); 
 sf::Color trailcolor(255,255,0);
+
 
 //fonts & text
 sf::Font font;
@@ -46,7 +48,9 @@ int difficulty_scale=75;
 int score = 0;
 
 //window construction
-sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close,settings);
+sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
+int defaultXPos = (sf::VideoMode::getDesktopMode().width)/2-300;
+int defaultYPos = (sf::VideoMode::getDesktopMode().height)/2-400;
 
 //view construction
 sf::View view2(sf::Vector2f(x, y), sf::Vector2f(600.f, 800.f));
@@ -66,9 +70,9 @@ void init(){
     score = 0;
     
     //colors
-    backround.r = 0;
-    backround.g = 0;
-    backround.b = 0;
+    background.r = 0;
+    background.g = 0;
+    background.b = 0;
 
     //antialias
     settings.stencilBits = 8;
@@ -117,20 +121,24 @@ void init(){
     view2.setSize(sf::Vector2f(600.f, 800.f));
     view2.setCenter(sf::Vector2f(x,y));
     window.setView(view2);
-    window.clear(backround);    
-
+    window.clear(background);    
 
     //clearing prev vectors
     blocks.clear();
     powerups.clear();
     trail.clear();
+
+    //Screen Position
+    window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
 }
 
 bool collide(){
+    
     for(long unsigned int i = 0;i<blocks.size();i++){
         if(butter.getGlobalBounds().intersects(blocks[i].getGlobalBounds())){                
             if(dy<0)
                 dy=5;
+            window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
             return true;
         }            
     }
@@ -201,14 +209,8 @@ void physics(){
     if(distance>score)
         score=distance;
 
-    //shift backround color
-    if(backround.b<200)
-        backround.b=distance/100;
-    else if (backround.r<200)
-        backround.r=distance/100-backround.r;
-    else if (backround.g<200)
-        backround.g=distance/100-backround.r-backround.g;
-    
+    //shift background color
+
 }
 
 void trailadding(){
@@ -226,11 +228,16 @@ void addnEraseBlocks(){
         if(blocks[i].getPosition().y<latest)
             latest = blocks[i].getPosition().y;
     }
+    if(1==1)
+    {
+
+    }
     if(((tan(distance/(cos(distance)+difficulty_scale)))>2.5) && latest > view2.getCenter().y-300){
         sf::RectangleShape block;
         block.setSize(sf::Vector2f(200+rand()%50,5));
-        block.setFillColor(sf::Color::Red);
-        block.setOutlineColor(sf::Color::White);
+        sf::Color BlockRed(score/30, 0, 63);
+        block.setFillColor(BlockRed);
+        block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
         block.setPosition(rand()%500-50,view2.getCenter().y-400);
         blocks.push_back(block);
@@ -303,7 +310,7 @@ int main()
         trailadding();
 
         //updates view       
-        window.clear(backround);
+        window.clear(background);
         if(y<view2.getCenter().y-50 && !collide())
             view2.setCenter(300.f,view2.getCenter().y+dy);
         
