@@ -60,7 +60,6 @@ int defaultYPos = (sf::VideoMode::getDesktopMode().height)/2-400;
 
 //view construction
 sf::View view2(sf::Vector2f(x, y), sf::Vector2f(600.f, 800.f));
-
 sf::Event event;
 
 void init(){
@@ -240,7 +239,7 @@ void updateBlocks(){
     if(((tan(distance/(cos(distance)+difficulty_scale)))>2.5) && latest > view2.getCenter().y-300){
         sf::RectangleShape block;
         block.setSize(sf::Vector2f(200+rand()%50,5));
-        sf::Color BlockRed(score/20, 0, 63);
+        sf::Color BlockRed(cos(score)*255, 0, 63);
         block.setFillColor(BlockRed);
         block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
