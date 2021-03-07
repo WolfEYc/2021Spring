@@ -247,6 +247,10 @@ void addnEraseBlocks(){
         if(blocks[i].getPosition().y>view2.getCenter().y+400.f)
             blocks.erase(blocks.begin()+i);
     }
+    for(long unsigned int i = 0;i<trail.size();i++){
+        if(trail[i].getPosition().y>view2.getCenter().y+400.f)
+            trail.erase(trail.begin()+i);
+    }
 }
 
 void drawAll(){
