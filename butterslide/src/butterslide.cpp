@@ -5,6 +5,8 @@
 //to compile & run
 // cd ~/Code/butterslide && g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system && ./butterslide
 
+sf::ContextSettings settings;
+
 //shapes
 sf::RectangleShape grayblock1;
 sf::RectangleShape grayblock2;
@@ -44,7 +46,7 @@ int difficulty_scale=75;
 int score = 0;
 
 //window construction
-sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
+sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close,settings);
 
 //view construction
 sf::View view2(sf::Vector2f(x, y), sf::Vector2f(600.f, 800.f));
@@ -67,6 +69,9 @@ void init(){
     backround.r = 0;
     backround.g = 0;
     backround.b = 0;
+
+    //antialias
+    settings.stencilBits = 8;
 
     //grayblock
     grayblock1.setSize(sf::Vector2f(15,800));       
@@ -198,11 +203,11 @@ void physics(){
 
     //shift backround color
     if(backround.b<200)
-        backround.b+=dy/8;
+        backround.b=distance/100;
     else if (backround.r<200)
-        backround.r+=dy/8;
+        backround.r=distance/100-backround.r;
     else if (backround.g<200)
-        backround.g+=dy/8;
+        backround.g=distance/100-backround.r-backround.g;
     
 }
 
