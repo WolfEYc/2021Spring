@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
 #include <random>
@@ -6,6 +7,8 @@
 // cd ~/Code/butterslide && g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system && ./butterslide
 
 sf::ContextSettings settings;
+
+
 
 //shapes
 sf::RectangleShape grayblock1;
@@ -54,7 +57,6 @@ int defaultYPos = (sf::VideoMode::getDesktopMode().height)/2-400;
 
 //view construction
 sf::View view2(sf::Vector2f(x, y), sf::Vector2f(600.f, 800.f));
-
 sf::Event event;
 
 void init(){
@@ -231,7 +233,7 @@ void addnEraseBlocks(){
     if(((tan(distance/(cos(distance)+difficulty_scale)))>2.5) && latest > view2.getCenter().y-300){
         sf::RectangleShape block;
         block.setSize(sf::Vector2f(200+rand()%50,5));
-        sf::Color BlockRed(score/20, 0, 63);
+        sf::Color BlockRed(cos(score)*255, 0, 63);
         block.setFillColor(BlockRed);
         block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
@@ -290,8 +292,11 @@ int main()
             }                       
             if(gameover && sf::Mouse::isButtonPressed(sf::Mouse::Left)        
             && sf::Mouse::getPosition(window).x>200.f && sf::Mouse::getPosition(window).x<400.f
-            && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f)                  
-                init();                          
+            && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f)     
+            {
+                init();
+            }             
+                                          
         }
         //game over  
         if(gameover || butter.getPosition().y>view2.getCenter().y+400.f){
