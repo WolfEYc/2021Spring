@@ -4,6 +4,7 @@
 #include <random>
 //to compile & run
 // cd ~/Code/butterslide && g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system && ./butterslide
+//Dogs are magically gay
 
 //shapes
 sf::RectangleShape grayblock1;
