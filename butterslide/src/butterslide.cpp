@@ -4,7 +4,6 @@
 #include <random>
 //to compile & run
 // cd ~/Code/butterslide && g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system && ./butterslide
-//Dogs are magically gay
 
 //shapes
 sf::RectangleShape grayblock1;
@@ -323,8 +322,5 @@ int main()
         //displays the current frame
         window.display();
     }
-
-    //bean burrito
-    // TEST
     return 0;
 }
