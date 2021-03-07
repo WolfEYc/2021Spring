@@ -223,14 +223,10 @@ void addnEraseBlocks(){
         if(blocks[i].getPosition().y<latest)
             latest = blocks[i].getPosition().y;
     }
-    if(1==1)
-    {
-
-    }
     if(((tan(distance/(cos(distance)+difficulty_scale)))>2.5) && latest > view2.getCenter().y-300){
         sf::RectangleShape block;
         block.setSize(sf::Vector2f(200+rand()%50,5));
-        sf::Color BlockRed(score/30, 0, 63);
+        sf::Color BlockRed(score/20, 0, 63);
         block.setFillColor(BlockRed);
         block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
