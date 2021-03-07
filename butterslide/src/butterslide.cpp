@@ -192,16 +192,20 @@ void physics(){
             dx-=.8;
         if(dy>-8 && !collide() )
             dy-=.5;
-        else
+        else{
             dy+=.3;
+            y+=2;
+        }
     }else{
         butter.setRotation(15.f);
         if(dx<8 && !collide())
             dx+=.8;
         if(dy>-8 && !collide())
             dy-=.5;
-        else
+        else{
             dy+=.3;
+            y+=2;
+        }
     }
     //wall side to side collision
     if(x<25)
@@ -209,6 +213,7 @@ void physics(){
     if(x>565)
         x=565;
 
+    
     //changing butter position and distance
     butter.setPosition(x+=dx, y+=dy);
     distance = intitaly-y;
