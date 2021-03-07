@@ -7,15 +7,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d73e02d8-3189-48bb-a866-616415a6b654" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../csharpfun/test.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.vscode/launch.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.vscode/tasks.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.vscode/tasks.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../butterslide/butterslide" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../butterslide/main.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/plzwork_jar/plzwork.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/plzwork_jar/plzwork.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/plzwork/Grid.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/plzwork/Grid.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/plzwork/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/plzwork/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/plzwork/Panel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/plzwork/Panel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Grid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Grid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Panel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Panel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
