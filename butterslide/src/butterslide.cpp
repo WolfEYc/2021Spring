@@ -5,6 +5,8 @@
 //to compile & run
 // cd ~/Code/butterslide && g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system && ./butterslide
 
+sf::ContextSettings settings;
+
 //shapes
 sf::RectangleShape grayblock1;
 sf::RectangleShape grayblock2;
@@ -71,6 +73,9 @@ void init(){
     background.r = 0;
     background.g = 0;
     background.b = 0;
+
+    //antialias
+    settings.stencilBits = 8;
 
     //grayblock
     grayblock1.setSize(sf::Vector2f(15,800));       
