@@ -13,7 +13,7 @@ sf::RectangleShape newGameButton;
 
 //colors
 sf::Color gray(150, 150, 150);
-sf::Color backround(0,0,0); 
+sf::Color background(0,0,0); 
 sf::Color trailcolor(255,255,0);
 
 //fonts & text
@@ -64,9 +64,9 @@ void init(){
     score = 0;
     
     //colors
-    backround.r = 0;
-    backround.g = 0;
-    backround.b = 0;
+    background.r = 0;
+    background.g = 0;
+    background.b = 0;
 
     //grayblock
     grayblock1.setSize(sf::Vector2f(15,800));       
@@ -112,7 +112,7 @@ void init(){
     view2.setSize(sf::Vector2f(600.f, 800.f));
     view2.setCenter(sf::Vector2f(x,y));
     window.setView(view2);
-    window.clear(backround);    
+    window.clear(background);    
 
 
     //clearing prev vectors
@@ -196,13 +196,13 @@ void physics(){
     if(distance>score)
         score=distance;
 
-    //shift backround color
-    if(backround.b<200)
-        backround.b+=dy/8;
-    else if (backround.r<200)
-        backround.r+=dy/8;
-    else if (backround.g<200)
-        backround.g+=dy/8;
+    //shift background color
+    if(background.b<200)
+        background.b+=dy/8;
+    else if (background.r<200)
+        background.r+=dy/8;
+    else if (background.g<200)
+        background.g+=dy/8;
     
 }
 
@@ -298,7 +298,7 @@ int main()
         trailadding();
 
         //updates view       
-        window.clear(backround);
+        window.clear(background);
         if(y<view2.getCenter().y-50 && !collide())
             view2.setCenter(300.f,view2.getCenter().y+dy);
         
