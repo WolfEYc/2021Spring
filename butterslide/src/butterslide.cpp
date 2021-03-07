@@ -184,8 +184,11 @@ void physics(){
             dx-=.1;
         else if (dx<0)
             dx+=.1;
-        if(dy<8)
+        if(dy<8 && !collide())
             dy+=.3;
+        else{
+            y+=5;
+        }
     }else if (input == 1){
         butter.setRotation(-15.f);
         if(dx>-8 && !collide() )
@@ -194,7 +197,7 @@ void physics(){
             dy-=.5;
         else{
             dy+=.3;
-            y+=2;
+            y+=5;
         }
     }else{
         butter.setRotation(15.f);
@@ -204,7 +207,7 @@ void physics(){
             dy-=.5;
         else{
             dy+=.3;
-            y+=2;
+            y+=5;
         }
     }
     //wall side to side collision
@@ -252,7 +255,7 @@ void updateBlocks(){
         blocks.push_back(block);
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
-        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+2);
+        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+5);
         if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
@@ -322,7 +325,10 @@ int main()
             continue;
         }
 
+        
         physics();
+        //adds and erases the red blocks
+        updateBlocks();
 
         setTrailColor(0);
 
@@ -333,8 +339,7 @@ int main()
         if(y<view2.getCenter().y-50 && !collide())
             view2.setCenter(300.f,view2.getCenter().y+dy);
         
-        //adds and erases the red blocks
-        updateBlocks();
+        
         
         //sets siderails 
         grayblock1.setPosition(0,view2.getCenter().y-400);
