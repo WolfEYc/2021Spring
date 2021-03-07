@@ -1,11 +1,17 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
 #include <random>
 //to compile & run
-// cd ~/Code/butterslide && g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system && ./butterslide
+// g++ butterslide.cpp -o butterslide -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio && ./butterslide
 
+//setterings
 sf::ContextSettings settings;
+
+//sounds
+sf::SoundBuffer newGameSound;
+sf::Sound newGamebing;
 
 //shapes
 sf::RectangleShape grayblock1;
@@ -127,6 +133,9 @@ void init(){
     blocks.clear();
     powerups.clear();
     trail.clear();
+    
+    //sounds
+    newGamebing.setBuffer(newGameSound);
 
     //Screen Position
     window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
@@ -222,7 +231,7 @@ void trailadding(){
     butter.setOutlineThickness(2);
 }
 
-void addnEraseBlocks(){
+void updateBlocks(){
     float latest = 900.f;
     for(long unsigned int i = 0;i<blocks.size();i++){
         if(blocks[i].getPosition().y<latest)
@@ -239,12 +248,12 @@ void addnEraseBlocks(){
         blocks.push_back(block);
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
-        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy));
-        if(blocks[i].getPosition().y>view2.getCenter().y+400.f)
+        blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+2);
+        if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
     for(long unsigned int i = 0;i<trail.size();i++){
-        if(trail[i].getPosition().y>view2.getCenter().y+400.f)
+        if(trail[i].getPosition().y>view2.getCenter().y+500.f)
             trail.erase(trail.begin()+i);
     }
 }
@@ -266,6 +275,10 @@ int main()
     //font     
     if (!font.loadFromFile("/usr/bin/arial.ttf"))
         std::cout << "arial file no likey" <<std::endl;
+    if (!newGameSound.loadFromFile("src/button.wav"))
+        std::cout << "no sound dingus" << std::endl;
+    
+
     
     //fixes random
     srand(time(NULL));
@@ -294,8 +307,10 @@ int main()
             }                       
             if(gameover && sf::Mouse::isButtonPressed(sf::Mouse::Left)        
             && sf::Mouse::getPosition(window).x>200.f && sf::Mouse::getPosition(window).x<400.f
-            && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f)                  
-                init();                          
+            && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f){                 
+                newGamebing.play();
+                init();                
+            }                         
         }
         //game over  
         if(gameover || butter.getPosition().y>view2.getCenter().y+400.f){
@@ -315,7 +330,7 @@ int main()
             view2.setCenter(300.f,view2.getCenter().y+dy);
         
         //adds and erases the red blocks
-        addnEraseBlocks();
+        updateBlocks();
         
         //sets siderails 
         grayblock1.setPosition(0,view2.getCenter().y-400);
