@@ -51,7 +51,7 @@ float x = 300.f;
 float y = 300.f;
 const float intitaly = 300.f;
 float distance = 0;
-int difficulty_scale=200;
+int difficulty_scale=100;
 int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
@@ -251,7 +251,7 @@ void addRandPowerup(){
         powerup.setRadius(6.f);
         powerup.setOutlineColor(sf::Color::White);
         powerup.setOutlineThickness(2);
-        powerup.setPosition(rand()%500-50,view2.getCenter().y-400);
+        powerup.setPosition(rand()%500+20,view2.getCenter().y-400);
         if(which==1){
             powerup.setFillColor(sf::Color::Red);
             std::pair<int,sf::CircleShape> powerpair(which,powerup);   
@@ -304,8 +304,10 @@ void updateBlocks(){
     }
     for(long unsigned int i = 0;i<powerups.size();i++){
         powerups[i].second.setPosition(powerups[i].second.getPosition().x,powerups[i].second.getPosition().y+1);
-        if(butter.getGlobalBounds().intersects(powerups[i].second.getGlobalBounds()))
+        if(butter.getGlobalBounds().intersects(powerups[i].second.getGlobalBounds())){
             currentPower = powerups[i].first;
+            powerups.erase(powerups.begin()+i);
+        }
         if(powerups[i].second.getPosition().y>view2.getCenter().y+500.f)
             powerups.erase(powerups.begin()+i);
     }
@@ -317,7 +319,7 @@ void powerupdate(){
     if(powerupdist>1000){
         powerupdist=0;
         currentPower=0;
-    }        
+    }
 }
 
 void backgroundShift(){
@@ -384,7 +386,7 @@ int main()
             }                       
             if(gameover && sf::Mouse::isButtonPressed(sf::Mouse::Left)        
             && sf::Mouse::getPosition(window).x>200.f && sf::Mouse::getPosition(window).x<400.f
-            && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f){                 
+            && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f){               
                 newGamebing.play();
                 init();              
             }                         
