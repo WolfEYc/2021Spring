@@ -55,6 +55,7 @@ int difficulty_scale=100;
 int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
+int rainbow = 0;
 
 //window construction
 sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
@@ -78,6 +79,7 @@ void init(){
     score = 0;
     powerupdist = 0;
     currentPower = 0;
+    rainbow = 0;
     
     //colors
     background.r = 0;
@@ -166,9 +168,42 @@ void setTrailColor(int style){
         trailcolor.b=abs(dy)*12+abs(dx)*6;
     }
     if(style > 0){
-        trailcolor.r=rand()%255;
-        trailcolor.b=rand()%255;
-        trailcolor.g=rand()%255;
+        rainbow++;
+        if(rainbow>70)
+            rainbow=0;
+        
+        if (rainbow<10){
+            trailcolor.r=255;
+            trailcolor.g=0;
+            trailcolor.b=0;
+        }else if (rainbow<20) {       
+            trailcolor.r=255;
+            trailcolor.g=69;
+            trailcolor.b=0;
+        }              
+        else if (rainbow<30){
+            trailcolor.r=255;
+            trailcolor.b=255;
+            trailcolor.g=0;
+        }
+        else if(rainbow<40){
+            trailcolor.r=0;
+            trailcolor.b=0;
+            trailcolor.g=255;
+        }else if(rainbow<50){
+            trailcolor.r=0;
+            trailcolor.b=255;
+            trailcolor.g=0;
+        }else if(rainbow<60){
+            trailcolor.r=111;
+            trailcolor.b=255;
+            trailcolor.g=0;
+        }
+        else{        
+            trailcolor.r=127;
+            trailcolor.g=0;
+            trailcolor.b=255;            
+        }
     }
 }
 
@@ -303,7 +338,7 @@ void updateBlocks(){
             trail.erase(trail.begin()+i);
     }
     for(long unsigned int i = 0;i<powerups.size();i++){
-        powerups[i].second.setPosition(powerups[i].second.getPosition().x,powerups[i].second.getPosition().y+1);
+        powerups[i].second.setPosition(powerups[i].second.getPosition().x,powerups[i].second.getPosition().y+1.5);
         if(butter.getGlobalBounds().intersects(powerups[i].second.getGlobalBounds())){
             currentPower = powerups[i].first;
             powerups.erase(powerups.begin()+i);
