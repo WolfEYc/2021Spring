@@ -28,7 +28,7 @@ sf::Color background(0,0,0);
 sf::Color trailcolor(255,255,0);
 sf::Color glow(64,64,38,225);
 sf::Color BlockRed;
-sf::Color PulseOutline;
+sf::Color PulseGate;
 
 //fonts & text
 sf::Font font;
@@ -60,7 +60,7 @@ float powerupdist = 0.f;
 int currentPower = 0;
 int rainbow = 0;
 int pulseblock = 0;
-bool outlineGate = false;
+bool pulseGate = false;
 
 //window construction
 sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
@@ -220,19 +220,19 @@ void changeBlockColor(){
     BlockRed.r = 50+score/50;
     BlockRed.g = 50;
     BlockRed.b = 255-score/150;
+}
 
-    if(pulseblock >=255)
-        outlineGate = true;
-    if(pulseblock <=0)
-        outlineGate = false;
-    if(!outlineGate)
-        pulseblock+=3;
+int pulse(int max, int min, int value, int rate)
+{
+    if(pulseblock >=max)
+        pulseGate = true;
+    if(pulseblock <=min)
+        pulseGate = false;
+    if(!pulseGate)
+        value+=rate;
     else
-        pulseblock-=3;
-
-    PulseOutline.r = 0;
-    PulseOutline.g = 0;
-    PulseOutline.b = 0;
+        value-=rate;
+        return(value);
 }
 
 void endScreen(){
@@ -364,7 +364,6 @@ void updateBlocks(){
     for(long unsigned int i = 0;i<blocks.size();i++){
         blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+5);
         blocks[i].setFillColor(BlockRed);
-        blocks[i].setOutlineColor(PulseOutline);
         if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
