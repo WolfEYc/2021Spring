@@ -323,11 +323,11 @@ void addRandPowerup(){
         powerup.setPosition(rand()%500+20,view2.getCenter().y-400);
         if(which==1){
             powerup.setFillColor(sf::Color::Red);
-            std::pair<int,sf::CircleShape> powerpair(which,powerup);   
+            std::pair<int,sf::CircleShape> powerpair(which,powerup);             
             powerups.push_back(powerpair);
         }else if (which ==2){
             powerup.setFillColor(sf::Color::Blue);
-            std::pair<int,sf::CircleShape> powerpair(which,powerup);   
+            std::pair<int,sf::CircleShape> powerpair(which,powerup);
             powerups.push_back(powerpair);
         }else{
             powerup.setFillColor(sf::Color::Green);
@@ -386,9 +386,14 @@ void updateBlocks(){
 void powerupdate(){
     if(currentPower!=0)
         powerupdist+=2;
+    if(currentPower==1)
+        window.setFramerateLimit(30);
+    if(currentPower==2)
+        window.setFramerateLimit(120);
     if(powerupdist>1000){
         powerupdist=0;
         currentPower=0;
+        window.setFramerateLimit(60);
     }
 }
 
