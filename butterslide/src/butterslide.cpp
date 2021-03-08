@@ -150,8 +150,7 @@ void init(){
     window.setPosition(sf::Vector2i(defaultXPos + rand() % 25, defaultYPos + rand() % 25));
 }
 
-bool collide(){
-    
+bool collide(){    
     for(long unsigned int i = 0;i<blocks.size();i++){
         if(butter.getGlobalBounds().intersects(blocks[i].getGlobalBounds())){                
             if(dy<0)
@@ -290,7 +289,7 @@ void physics(bool collision){
     butter.setPosition(x+=dx, y+=dy);
     if(collision){
         butter.setPosition(x+=dx, y+=dy+5); 
-        music.openFromFile("BWAP.wav");
+        music.openFromFile("src/BWAP.wav");
         music.play();    
     }
     distance = intitaly-y;
@@ -304,7 +303,12 @@ void physics(bool collision){
 }
 
 void addRandPowerup(){
-    if(rand()%1000+1==69){
+    float latest = 900.f;
+    for(long unsigned int i = 0;i<powerups.size();i++){
+        if(powerups[i].second.getPosition().y<latest)
+            latest = powerups[i].second.getPosition().y;
+    }
+    if(latest > view2.getCenter().y+400 && rand()%1000+1==69){
         int which = rand()%3+1;
         sf::CircleShape powerup;
         powerup.setRadius(6.f);
