@@ -20,11 +20,13 @@ sf::RectangleShape grayblock2;
 sf::RectangleShape butter;
 sf::RectangleShape newGameButton;
 sf::RectangleShape StarTrail;
+sf::CircleShape glowCircle;
 
 //colors
 sf::Color gray(150, 150, 150);
 sf::Color background(0,0,0); 
 sf::Color trailcolor(255,255,0);
+sf::Color glow(64,64,38,225);
 sf::Color BlockRed;
 
 //fonts & text
@@ -51,7 +53,7 @@ float x = 300.f;
 float y = 300.f;
 const float intitaly = 300.f;
 float distance = 0;
-int difficulty_scale=100;
+int difficulty_scale=125;
 int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
@@ -102,6 +104,10 @@ void init(){
     butter.setPosition(sf::Vector2f(x,y));
     butter.setOutlineThickness(2);
 
+    //butterglow
+    glowCircle.setFillColor(glow);
+    glowCircle.setRadius(40.f);
+
     //new game button
     newGameButton.setSize(sf::Vector2f(200.f,100.f));
     newGameButton.setFillColor(sf::Color::Yellow);
@@ -139,7 +145,7 @@ void init(){
     blocks.clear();
     powerups.clear();
     trail.clear();
-    
+
     //sounds
     newGamebing.setBuffer(newGameSound);
 
@@ -272,6 +278,7 @@ void physics(bool collision){
         music.openFromFile("src/BWAP.wav");
         music.play();    
     }
+    glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-24);
     distance = intitaly-y;
 
     //update score
@@ -288,7 +295,7 @@ void addRandPowerup(){
         if(powerups[i].second.getPosition().y<latest)
             latest = powerups[i].second.getPosition().y;
     }
-    if(latest > view2.getCenter().y+400 && rand()%1000+1==69){
+    if(currentPower==0 &&latest > view2.getCenter().y+400 && rand()%1000+1==69){
         int which = rand()%3+1;
         sf::CircleShape powerup;
         powerup.setRadius(6.f);
@@ -332,7 +339,7 @@ void updateBlocks(){
         block.setFillColor(BlockRed);
         block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
-        block.setPosition(rand()%500-50,view2.getCenter().y-400);
+        block.setPosition(rand()%500-50,view2.getCenter().y-500);
         blocks.push_back(block);
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
@@ -382,15 +389,14 @@ void backgroundShift(){
 }
 
 void drawAll(){
+    window.draw(glowCircle);
     for(long unsigned int i = 0;i<trail.size();i++)
         window.draw(trail[i]);
     for(long unsigned int i = 0;i<powerups.size();i++)
         window.draw(powerups[i].second);
     for(long unsigned int i = 0;i<blocks.size();i++)
-        window.draw(blocks[i]);
-    
-
-    window.draw(butter);        
+        window.draw(blocks[i]);    
+    window.draw(butter); 
     window.draw(dist);
     window.draw(grayblock1);
     window.draw(grayblock2);
@@ -400,7 +406,7 @@ int main()
 {
     //font     
     if (!font.loadFromFile("/usr/bin/arial.ttf"))
-        std::cout << "arial file no likey" <<std::endl;       
+        std::cout << "arial file no likey" <<std::endl;   
         
     //fixes random
     srand(time(NULL));
@@ -451,7 +457,7 @@ int main()
 
         trailadding();
 
-        backgroundShift();
+        //backgroundShift();
 
         powerupdate();
 
