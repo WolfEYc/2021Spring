@@ -25,7 +25,7 @@ sf::RectangleShape StarTrail;
 sf::Color gray(150, 150, 150);
 sf::Color background(0,0,0); 
 sf::Color trailcolor(255,255,0);
-
+sf::Color BlockRed;
 
 //fonts & text
 sf::Font font;
@@ -168,42 +168,46 @@ void setTrailColor(int style){
     }
     if(style > 0){
         rainbow++;
-        if(rainbow>70)
+        if(rainbow>12)
             rainbow=0;
         
-        if (rainbow<10){
+        if (rainbow<2){
             trailcolor.r=255;
-            trailcolor.g=0;
-            trailcolor.b=0;
-        }else if (rainbow<20) {       
+            trailcolor.g=75;
+            trailcolor.b=75;
+        }else if (rainbow<4) {       
             trailcolor.r=255;
-            trailcolor.g=69;
-            trailcolor.b=0;
+            trailcolor.g=82+50;
+            trailcolor.b=75;
         }              
-        else if (rainbow<30){
+        else if (rainbow<6){
             trailcolor.r=255;
             trailcolor.b=255;
-            trailcolor.g=0;
+            trailcolor.g=75;
         }
-        else if(rainbow<40){
-            trailcolor.r=0;
-            trailcolor.b=0;
+        else if(rainbow<8){
+            trailcolor.r=75;
+            trailcolor.b=75;
             trailcolor.g=255;
-        }else if(rainbow<50){
-            trailcolor.r=0;
+        }else if(rainbow<10){
+            trailcolor.r=75;
             trailcolor.b=255;
-            trailcolor.g=0;
-        }else if(rainbow<60){
-            trailcolor.r=111;
+            trailcolor.g=75;
+        }else if(rainbow<11){
+            trailcolor.r=136+50;
             trailcolor.b=255;
-            trailcolor.g=0;
+            trailcolor.g=75;
         }
         else{        
-            trailcolor.r=127;
-            trailcolor.g=0;
+            trailcolor.r=152+50;
+            trailcolor.g=75;
             trailcolor.b=255;            
         }
     }
+}
+
+void changeBlockColor(){
+    BlockRed.r = score/255;
 }
 
 void endScreen(){
@@ -325,7 +329,6 @@ void updateBlocks(){
     if(((tan(distance/(cos(distance)+difficulty_scale)))>2.5) && latest > view2.getCenter().y-300){
         sf::RectangleShape block;
         block.setSize(sf::Vector2f(200+rand()%50,5));
-        sf::Color BlockRed(cos(score)*255, 0, 63);
         block.setFillColor(BlockRed);
         block.setOutlineColor(sf::Color::Blue);
         block.setOutlineThickness(2);
@@ -334,6 +337,7 @@ void updateBlocks(){
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
         blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+5);
+        blocks[i].setFillColor(BlockRed);
         if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
