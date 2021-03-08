@@ -61,6 +61,7 @@ int currentPower = 0;
 int rainbow = 0;
 int pulseblock = 0;
 int frame60 = 0;
+int radius_glow = 0;
 bool pulseGate = false;
 
 //window construction
@@ -305,13 +306,19 @@ void physics(bool collision){
         music.openFromFile("BWAP.wav");
         music.play();    
     }
-    if(frame60%16>8){
+    float blob = (rand() % ((( 2 - (0)) + 1 ) + (0)));
+    float pulse_size = pulse(40, 30, radius_glow, blob);
+    radius_glow = pulse_size;
+    glowCircle.setRadius(pulse_size);
+    glowCircle.setPosition(butter.getPosition().x-28+(radius_glow/10),butter.getPosition().y-22-(radius_glow/10));
+    
+    /*if(frame60%16>8){
         glowCircle.setRadius(35.f);
         glowCircle.setPosition(butter.getPosition().x-30,butter.getPosition().y-22);
     }else{
         glowCircle.setRadius(40.f);
         glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-26);
-    }
+    }*/
     
     distance = intitaly-y;
 
