@@ -54,12 +54,13 @@ float x = 300.f;
 float y = 300.f;
 const float intitaly = 300.f;
 float distance = 0;
-int difficulty_scale=125;
+int difficulty_scale=150;
 int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
 int rainbow = 0;
 int pulseblock = 0;
+int frame60 = 0;
 bool pulseGate = false;
 
 //window construction
@@ -82,6 +83,7 @@ void init(){
     y = 300.f;
     distance = 0;
     score = 0;
+    frame60=0;
     powerupdist = 0;
     currentPower = 0;
     rainbow = 0;
@@ -286,8 +288,8 @@ void physics(bool collision){
     //wall side to side collision
     if(currentPower==3){
         if(x<0)
-            x=580;
-        if(x>580)
+            x=600;
+        if(x>600)
             x=0;
     }else{
         if(x<25)
@@ -303,8 +305,14 @@ void physics(bool collision){
         music.openFromFile("BWAP.wav");
         music.play();    
     }
+    if(frame60%16>8){
+        glowCircle.setRadius(35.f);
+        glowCircle.setPosition(butter.getPosition().x-30,butter.getPosition().y-22);
+    }else{
+        glowCircle.setRadius(40.f);
+        glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-26);
+    }
     
-    glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-24);
     distance = intitaly-y;
 
     //update score
@@ -324,7 +332,7 @@ void addRandPowerup(){
     if(currentPower==0 &&latest > view2.getCenter().y+400 && rand()%1000+1==69){
         int which = rand()%3+1;
         sf::CircleShape powerup;
-        powerup.setRadius(6.f);
+        powerup.setRadius(7.f);
         powerup.setOutlineColor(sf::Color::White);
         powerup.setOutlineThickness(2);
         powerup.setPosition(rand()%500+20,view2.getCenter().y-400);
@@ -477,7 +485,11 @@ int main()
         if(gameover || butter.getPosition().y>view2.getCenter().y+400.f){
             endScreen();
             continue;
-        } 
+        }
+
+        frame60++;
+        if(frame60>=60)
+            frame60=0;
 
         addRandPowerup();    
         
