@@ -388,7 +388,7 @@ void powerupdate(){
     if(currentPower==1)
         window.setFramerateLimit(30);
     if(currentPower==2)
-        window.setFramerateLimit(120);
+        window.setFramerateLimit(80);
     if(powerupdist>1000){
         powerupdist=0;
         currentPower=0;
