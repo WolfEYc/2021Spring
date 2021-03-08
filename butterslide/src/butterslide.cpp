@@ -52,7 +52,7 @@ float x = 300.f;
 float y = 300.f;
 const float intitaly = 300.f;
 float distance = 0;
-int difficulty_scale=100;
+int difficulty_scale=125;
 int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
@@ -213,7 +213,7 @@ void changeBlockColor(){
 
     BlockRed.r = 50+score/50;
     BlockRed.g = 50;
-    BlockRed.b = 255;
+    BlockRed.b = 255-score/150;
 
     if(pulseblock >=255)
         outlineGate = true;
@@ -227,7 +227,6 @@ void changeBlockColor(){
     PulseOutline.r = 0;
     PulseOutline.g = 0;
     PulseOutline.b = 0;
-    std::cout << pulseblock << std::endl;
 }
 
 void endScreen(){
