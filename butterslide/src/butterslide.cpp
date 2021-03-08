@@ -224,9 +224,9 @@ void changeBlockColor(){
 
 int pulse(int max, int min, int value, int rate)
 {
-    if(pulseblock >=max)
+    if(value >=max)
         pulseGate = true;
-    if(pulseblock <=min)
+    if(value <=min)
         pulseGate = false;
     if(!pulseGate)
         value+=rate;
@@ -294,7 +294,7 @@ void physics(bool collision){
     butter.setPosition(x+=dx, y+=dy);
     if(collision){
         butter.setPosition(x+=dx, y+=dy+5); 
-        music.openFromFile("src/BWAP.wav");
+        music.openFromFile("BWAP.wav");
         music.play();    
     }
     glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-24);
