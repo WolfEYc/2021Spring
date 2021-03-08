@@ -38,20 +38,22 @@ std::vector<sf::RectangleShape> trail;
 
 
 //powerups
-std::vector<sf::CircleShape> powerups;
+std::vector<std::pair<int,sf::CircleShape>> powerups;
 
 //variables
 bool gameover = false;
 int input = 0;
 float dx = 0;
 float dy = 0;
-int next1000 = 0;
+float next6000 = 0;
 float x = 300.f;
 float y = 300.f;
 const float intitaly = 300.f;
 float distance = 0;
 int difficulty_scale=75;
 int score = 0;
+float powerupdist = 0.f;
+int currentPower = 0;
 
 //window construction
 sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
@@ -68,11 +70,13 @@ void init(){
     input = 0;
     dx = 0;
     dy = 0;
-    next1000 = 0;
+    next6000 = 0;
     x = 300.f;
     y = 300.f;
     distance = 0;
     score = 0;
+    powerupdist = 0;
+    currentPower = 0;
     
     //colors
     background.r = 0;
@@ -158,7 +162,12 @@ void setTrailColor(int style){
     if(style == 0){
         trailcolor.r=255;
         trailcolor.g=255;
-        trailcolor.b=abs(dy)*10+abs(dx)*3;
+        trailcolor.b=abs(dy)*12+abs(dx)*6;
+    }
+    if(style > 0){
+        trailcolor.r=rand()%255;
+        trailcolor.b=rand()%255;
+        trailcolor.g=rand()%255;
     }
 }
 
@@ -232,6 +241,30 @@ void physics(bool collision){
 
 }
 
+void addRandPowerup(){
+    if(rand()%1000+1==69){
+        int which = rand()%3+1;
+        sf::CircleShape powerup;
+        powerup.setRadius(6.f);
+        powerup.setOutlineColor(sf::Color::White);
+        powerup.setOutlineThickness(2);
+        powerup.setPosition(rand()%500-50,view2.getCenter().y-400);
+        if(which==1){
+            powerup.setFillColor(sf::Color::Red);
+            std::pair<int,sf::CircleShape> powerpair(which,powerup);   
+            powerups.push_back(powerpair);
+        }else if (which ==2){
+            powerup.setFillColor(sf::Color::Blue);
+            std::pair<int,sf::CircleShape> powerpair(which,powerup);   
+            powerups.push_back(powerpair);
+        }else{
+            powerup.setFillColor(sf::Color::Green);
+            std::pair<int,sf::CircleShape> powerpair(which,powerup);   
+            powerups.push_back(powerpair);
+        }
+    }
+}
+
 void trailadding(){
     //adds trail to end
     butter.setOutlineThickness(0);    
@@ -266,13 +299,48 @@ void updateBlocks(){
         if(trail[i].getPosition().y>view2.getCenter().y+500.f)
             trail.erase(trail.begin()+i);
     }
+    for(long unsigned int i = 0;i<powerups.size();i++){
+        powerups[i].second.setPosition(powerups[i].second.getPosition().x,powerups[i].second.getPosition().y+1);
+        if(butter.getGlobalBounds().intersects(powerups[i].second.getGlobalBounds()))
+            currentPower = powerups[i].first;
+        if(powerups[i].second.getPosition().y>view2.getCenter().y+500.f)
+            powerups.erase(powerups.begin()+i);
+    }
+}
+
+void powerupdate(){
+    if(currentPower!=0)
+        powerupdist+=2;
+    if(powerupdist>1000){
+        powerupdist=0;
+        currentPower=0;
+    }        
+}
+
+void backgroundShift(){
+    next6000+=score/1000;
+    if(next6000>6000)
+        next6000=0;
+    if(next6000>4000){
+        background.b = 200;
+        background.g = 200;
+        background.r = (next6000-4000)/10.0;
+    }else if (next6000>2000){
+        background.b=200;
+        background.g = (next6000-2000)/10.0;
+    }else{
+        background.b=next6000/10.0;
+    }        
 }
 
 void drawAll(){
     for(long unsigned int i = 0;i<trail.size();i++)
         window.draw(trail[i]);
+    for(long unsigned int i = 0;i<powerups.size();i++)
+        window.draw(powerups[i].second);
     for(long unsigned int i = 0;i<blocks.size();i++)
         window.draw(blocks[i]);
+    
 
     window.draw(butter);        
     window.draw(dist);
@@ -319,30 +387,34 @@ int main()
             && sf::Mouse::getPosition(window).x>200.f && sf::Mouse::getPosition(window).x<400.f
             && sf::Mouse::getPosition(window).y>500.f && sf::Mouse::getPosition(window).y<600.f){                 
                 newGamebing.play();
-                init();                
+                init();              
             }                         
         }
         //game over  
         if(gameover || butter.getPosition().y>view2.getCenter().y+400.f){
             endScreen();
             continue;
-        }
+        } 
 
+        addRandPowerup();    
         
         physics(collide());
-        //adds and erases the red blocks
+        //adds and erases the red blocks        
+
         updateBlocks();
 
-        setTrailColor(0);
+        setTrailColor(currentPower);
 
         trailadding();
+
+        backgroundShift();
+
+        powerupdate();
 
         //updates view       
         window.clear(background);
         if(y<view2.getCenter().y-50 && !collide())
-            view2.setCenter(300.f,view2.getCenter().y+dy);
-        
-        
+            view2.setCenter(300.f,view2.getCenter().y+dy);        
         
         //sets siderails 
         grayblock1.setPosition(0,view2.getCenter().y-400);
