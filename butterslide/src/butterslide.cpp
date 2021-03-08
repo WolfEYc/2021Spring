@@ -26,6 +26,7 @@ sf::Color gray(150, 150, 150);
 sf::Color background(0,0,0); 
 sf::Color trailcolor(255,255,0);
 sf::Color BlockRed;
+sf::Color PulseOutline;
 
 //fonts & text
 sf::Font font;
@@ -56,6 +57,8 @@ int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
 int rainbow = 0;
+int pulseblock = 0;
+bool outlineGate = false;
 
 //window construction
 sf::RenderWindow window(sf::VideoMode(600, 800), "ButterSlide",sf::Style::Close);
@@ -208,7 +211,24 @@ void setTrailColor(int style){
 }
 
 void changeBlockColor(){
-    BlockRed.r = score/255;
+
+    BlockRed.r = 50+score/50;
+    BlockRed.g = 50;
+    BlockRed.b = 255;
+
+    if(pulseblock >=255)
+        outlineGate = true;
+    if(pulseblock <=0)
+        outlineGate = false;
+    if(!outlineGate)
+        pulseblock+=3;
+    else
+        pulseblock-=3;
+
+    PulseOutline.r = 0;
+    PulseOutline.g = 0;
+    PulseOutline.b = 0;
+    std::cout << pulseblock << std::endl;
 }
 
 void endScreen(){
@@ -327,13 +347,14 @@ void updateBlocks(){
         block.setSize(sf::Vector2f(200+rand()%50,5));
         block.setFillColor(BlockRed);
         block.setOutlineColor(sf::Color::Blue);
-        block.setOutlineThickness(2);
+        block.setOutlineThickness(0);
         block.setPosition(rand()%500-50,view2.getCenter().y-400);
         blocks.push_back(block);
     }
     for(long unsigned int i = 0;i<blocks.size();i++){
         blocks[i].setPosition(blocks[i].getPosition().x,blocks[i].getPosition().y+abs(dy)+5);
         blocks[i].setFillColor(BlockRed);
+        blocks[i].setOutlineColor(PulseOutline);
         if(blocks[i].getPosition().y>view2.getCenter().y+500.f)
             blocks.erase(blocks.begin()+i);
     }
@@ -445,9 +466,11 @@ int main()
 
         setTrailColor(currentPower);
 
+        changeBlockColor();
+
         trailadding();
 
-        backgroundShift();
+        //backgroundShift();
 
         powerupdate();
 
