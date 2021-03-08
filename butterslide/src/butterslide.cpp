@@ -284,11 +284,17 @@ void physics(bool collision){
         }
     }
     //wall side to side collision
-    if(x<25)
-        x=25;
-    if(x>565)
-        x=565;
-
+    if(currentPower==3){
+        if(x<0)
+            x=580;
+        if(x>580)
+            x=0;
+    }else{
+        if(x<25)
+            x=25;
+        if(x>565)
+            x=565;
+    }
     
     //changing butter position and distance
     butter.setPosition(x+=dx, y+=dy);
@@ -297,6 +303,7 @@ void physics(bool collision){
         music.openFromFile("src/BWAP.wav");
         music.play();    
     }
+    
     glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-24);
     distance = intitaly-y;
 
@@ -329,7 +336,7 @@ void addRandPowerup(){
             powerup.setFillColor(sf::Color::Blue);
             std::pair<int,sf::CircleShape> powerpair(which,powerup);
             powerups.push_back(powerpair);
-        }else{
+        }else if (which==3){
             powerup.setFillColor(sf::Color::Green);
             std::pair<int,sf::CircleShape> powerpair(which,powerup);   
             powerups.push_back(powerpair);
@@ -422,8 +429,10 @@ void drawAll(){
         window.draw(blocks[i]);    
     window.draw(butter); 
     window.draw(dist);
-    window.draw(grayblock1);
-    window.draw(grayblock2);
+    if(currentPower!=3){
+        window.draw(grayblock1);
+        window.draw(grayblock2);
+    }
 }
 
 int main()
