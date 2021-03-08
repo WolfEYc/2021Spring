@@ -12,6 +12,7 @@ sf::ContextSettings settings;
 //sounds
 sf::SoundBuffer newGameSound;
 sf::Sound newGamebing;
+sf::Music music;
 
 //shapes
 sf::RectangleShape grayblock1;
@@ -50,7 +51,7 @@ float x = 300.f;
 float y = 300.f;
 const float intitaly = 300.f;
 float distance = 0;
-int difficulty_scale=75;
+int difficulty_scale=200;
 int score = 0;
 float powerupdist = 0.f;
 int currentPower = 0;
@@ -229,7 +230,9 @@ void physics(bool collision){
     //changing butter position and distance
     butter.setPosition(x+=dx, y+=dy);
     if(collision){
-        butter.setPosition(x+=dx, y+=dy+5);
+        butter.setPosition(x+=dx, y+=dy+5); 
+        music.openFromFile("BWAP.wav");
+        music.play();    
     }
     distance = intitaly-y;
 
@@ -352,12 +355,8 @@ int main()
 {
     //font     
     if (!font.loadFromFile("/usr/bin/arial.ttf"))
-        std::cout << "arial file no likey" <<std::endl;
-    if (!newGameSound.loadFromFile("src/button.wav"))
-        std::cout << "no sound dingus" << std::endl;
-    
-
-    
+        std::cout << "arial file no likey" <<std::endl;       
+        
     //fixes random
     srand(time(NULL));
 
