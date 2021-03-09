@@ -252,6 +252,27 @@ void endScreen(){
     window.display();
 }
 
+void glowChanger(){
+    float blob = (rand() % ((( 2 - (0)) + 1 ) + (0)));
+    float pulse_size = pulse(40, 30, radius_glow, blob);
+    radius_glow = pulse_size;
+    glowCircle.setRadius(pulse_size);
+    glowCircle.setPosition(butter.getPosition().x-23-(radius_glow/5),butter.getPosition().y-17-(radius_glow/5));
+    
+    //colorshift
+    if(currentPower!=0){
+        glow.r = 64*(radius_glow/5);
+        glow.g = 64*(radius_glow/5);
+        glow.b = 38*(radius_glow/5);
+        
+    }else{
+        glow.r = 60*(radius_glow/12);        
+        glow.g = 60*(radius_glow/12);
+        glow.b = 34*(radius_glow/12);
+    }
+    glowCircle.setFillColor(glow);
+}
+
 void physics(bool collision){
     //do da physics
     if(input == 0){
@@ -303,14 +324,11 @@ void physics(bool collision){
     butter.setPosition(x+=dx, y+=dy);
     if(collision){
         butter.setPosition(x+=dx, y+=dy+5); 
-        music.openFromFile("BWAP.wav");
+        music.openFromFile("/usr/bin/BWAP.wav");
         music.play();    
     }
-    float blob = (rand() % ((( 2 - (0)) + 1 ) + (0)));
-    float pulse_size = pulse(40, 30, radius_glow, blob);
-    radius_glow = pulse_size;
-    glowCircle.setRadius(pulse_size);
-    glowCircle.setPosition(butter.getPosition().x-28+(radius_glow/10),butter.getPosition().y-22-(radius_glow/10));
+    
+    glowChanger();
     
     /*if(frame60%16>8){
         glowCircle.setRadius(35.f);
