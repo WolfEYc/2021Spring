@@ -330,7 +330,7 @@ void physics(bool collision){
     
     glowChanger();
     
-    distance -=dy;
+    distance = intitaly-y;
 
     //update score
     if(distance>score)
