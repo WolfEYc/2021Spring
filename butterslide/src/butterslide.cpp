@@ -330,15 +330,7 @@ void physics(bool collision){
     
     glowChanger();
     
-    /*if(frame60%16>8){
-        glowCircle.setRadius(35.f);
-        glowCircle.setPosition(butter.getPosition().x-30,butter.getPosition().y-22);
-    }else{
-        glowCircle.setRadius(40.f);
-        glowCircle.setPosition(butter.getPosition().x-35,butter.getPosition().y-26);
-    }*/
-    
-    distance = intitaly-y;
+    distance -=dy;
 
     //update score
     if(distance>score)
