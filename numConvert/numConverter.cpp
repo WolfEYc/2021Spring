@@ -5,7 +5,9 @@ using namespace std;
 
 int letNum(char letter)
 {
-    if (letter > 64)
+    if(letter > 96)
+        return letter - 87;
+    else if (letter > 64)
         return letter - 55;
     else
         return letter - 48;
