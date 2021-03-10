@@ -261,9 +261,9 @@ void glowChanger(){
     
     //colorshift
     if(currentPower!=0){
-        glow.r = 64*(radius_glow);
-        glow.g = 64*(radius_glow);
-        glow.b = 38*(radius_glow);
+        glow.r = 4*(radius_glow);
+        glow.g = 2*(radius_glow);
+        glow.b = 3*(radius_glow);
         
     }else{
         glow.r = 60*(radius_glow/12);        
