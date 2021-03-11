@@ -1,7 +1,6 @@
 #include <iostream>
 #include <queue>
 #include <vector>
-#include <fstream>
 using namespace std;
 
 queue<pair<int,int>> Disk_q, Spooler_q, Core_q;
@@ -170,11 +169,9 @@ void printTerminate(int terminatedJob)
 
 int main(){
 
-    ifstream in("input102.txt");
+    cin >> keyword >> MPL;
 
-    in >> keyword >> MPL;
-
-    while(in >> keyword >> argument)
+    while(cin >> keyword >> argument)
     {
         pair<string,int> addthis(keyword,argument);
 
@@ -292,7 +289,7 @@ int main(){
             }
         }
     }
-    
+
     cout << "SUMMARY:" << endl;
     cout << "Totaly elapsed time: " << total_time << " ms" << endl;
     cout << "Number of jobs that completed: " << jobCounter << endl;
