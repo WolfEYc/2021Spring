@@ -298,5 +298,6 @@ int main(){
     printf("%.3f",(float)(core_time_used)/(float)(total_time));
     cout << endl;
 
+    delete JobTimes;
     return 0;
 }
