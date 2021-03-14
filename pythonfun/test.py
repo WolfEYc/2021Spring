@@ -1,47 +1,27 @@
 import csv
 import numpy as np
 
-def next_closest_efrac(data,p_efract):
+def next_closest(data,p_efract,p_screat):
     minRow = 0
     for row in range(1,len(data)):
-        if(abs(float(data[row][4])-p_efract) < abs(float(data[minRow][4])-p_efract)):
-            minRow = row
-    return minRow
-
-def next_closest_screat(data,p_screat):
-    minRow = 0
-    for row in range(1,len(data)):
-        if(abs(float(data[row][7])-p_screat) < abs(float(data[minRow][7])-p_screat)):
+        if(abs(float(data[row][4])-p_efract)+(abs(float(data[row][7])-p_screat))*30
+        < abs(float(data[minRow][4])-p_efract)+(abs(float(data[minRow][7])-p_screat))*30):
             minRow = row
     return minRow
 
 def prediction (data,p_efrac,p_screat,k):
-    k_closest_efrac = []
-    k_closest_screat = []
-
-    efrac_data = data
-    screat_data = data
+    k_closest = []
 
     for i in range(k):
-        eminRow = next_closest_efrac(efrac_data,p_efrac)
-        #print(efrac_data[eminRow][4])
-        k_closest_efrac.append(efrac_data[eminRow][12])
-        efrac_data = np.delete(efrac_data, eminRow,0)
-
-        sminRow = next_closest_screat(screat_data,p_screat)
-        #print(screat_data[sminRow][7])
-        k_closest_screat.append(screat_data[sminRow][12])
-        screat_data = np.delete(screat_data, sminRow,0)
+        minRow = next_closest(data,p_efrac,p_screat)
+        print(data[minRow][4], " ",data[minRow][7])
+        k_closest.append(data[minRow][12])
+        data = np.delete(data, minRow,0)
 
     calculation = 0
     for i in range(k):
-        #print(k_closest_efrac[i])
-        #print(k_closest_screat[i])
-        if(k_closest_efrac[i]=='0'):
-            calculation-=(1)
-        else:
-            calculation+=(1)
-        if(k_closest_screat[i]=='0'):
+        #print(k_closest[i])
+        if(k_closest[i]=='0'):
             calculation-=(1)
         else:
             calculation+=(1)
@@ -99,8 +79,6 @@ p_screat = float(input())
 
 print("depth of search: (1-100) ")
 k = int(input())
-
-#print(prediction(data,p_efrac,p_screat,k))
 
 if(prediction(data,p_efrac,p_screat,k)):
     print("k_closest: will survive")

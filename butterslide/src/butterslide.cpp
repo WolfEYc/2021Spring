@@ -39,6 +39,7 @@ sf::Text dist;
 //blocks and trails
 std::vector<sf::RectangleShape> blocks;
 std::vector<sf::RectangleShape> trail;
+std::vector<sf::RectangleShape> particles;
 
 
 //powerups
@@ -151,6 +152,7 @@ void init(){
     blocks.clear();
     powerups.clear();
     trail.clear();
+    particles.clear();
 
     //sounds
     newGamebing.setBuffer(newGameSound);
@@ -273,6 +275,16 @@ void glowChanger(){
     glowCircle.setFillColor(glow);
 }
 
+void particlesadd(){
+    for(int i = 0; i < 100;i++){
+        sf::RectangleShape particle;
+        particle.setFillColor(trailcolor);
+        particle.setSize(sf::Vector2f(2.f,2.f));
+        particle.setPosition(butter.getPosition().x,butter.getPosition().y);   
+        particles.push_back(particle);
+    }
+}
+
 void physics(bool collision){
     //do da physics
     if(input == 0){
@@ -323,9 +335,10 @@ void physics(bool collision){
     //changing butter position and distance
     butter.setPosition(x+=dx, y+=dy);
     if(collision){
-        butter.setPosition(x+=dx, y+=dy+5); 
+        butter.setPosition(x+=dx, y+=dy+5);
+        particlesadd();
         music.openFromFile("/usr/bin/BWAP.wav");
-        music.play();    
+        music.play();
     }
     
     glowChanger();
@@ -412,6 +425,18 @@ void updateBlocks(){
         if(powerups[i].second.getPosition().y>view2.getCenter().y+500.f)
             powerups.erase(powerups.begin()+i);
     }
+    for(long unsigned int i = 0;i<particles.size()/2;i++){
+        particles[i].setPosition(particles[i].getPosition().x-(particles.size()/2-i)/3,particles[i].getPosition().y+i);
+    }
+    for(long unsigned int i = particles.size()/2;i<particles.size();i++){
+        particles[i].setPosition(particles[i].getPosition().x+i,particles[i].getPosition().y+(particles.size()/2-i));
+    }
+    for(long unsigned int i = 0;i<particles.size();i++){
+        if(particles[i].getPosition().x>x+50 || particles[i].getPosition().x<x-50
+            || particles[i].getPosition().y>y+50 || particles[i].getPosition().y<y-50)
+            particles.erase(particles.begin()+i);
+    }
+
 }
 
 void powerupdate(){
@@ -451,7 +476,9 @@ void drawAll(){
     for(long unsigned int i = 0;i<powerups.size();i++)
         window.draw(powerups[i].second);
     for(long unsigned int i = 0;i<blocks.size();i++)
-        window.draw(blocks[i]);    
+        window.draw(blocks[i]);
+    for(long unsigned int i = 0;i<particles.size();i++)
+        window.draw(particles[i]);    
     window.draw(butter); 
     window.draw(dist);
     if(currentPower!=3){
