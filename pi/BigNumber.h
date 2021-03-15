@@ -19,11 +19,10 @@ public:
 
 void BigNumber::moveDec(int where){
     int index = num.find('.');
-
+    cout << index << endl;
     //adds extra 0's
     while(where+index>=num.size()-1){
         num+='0';
-        cout << "nigga wtf" << endl;
     }
     while(index+where <= 0){
         num='0'+num;
