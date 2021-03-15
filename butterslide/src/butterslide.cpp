@@ -280,7 +280,7 @@ void particlesadd(){
         sf::RectangleShape particle;
         particle.setFillColor(trailcolor);
         particle.setSize(sf::Vector2f(2.f,2.f));
-        particle.setPosition(butter.getPosition().x,butter.getPosition().y);   
+        particle.setPosition(butter.getPosition().x,butter.getPosition().y-5);   
         particles.push_back(particle);
     }
 }

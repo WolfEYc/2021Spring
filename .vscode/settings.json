@@ -76,5 +76,6 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "terminal.integrated.shell.windows": "cmd.exe"
+    "terminal.integrated.shell.windows": "cmd.exe",
+    "git.ignoreLimitWarning": true
 }
