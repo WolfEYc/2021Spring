@@ -19,26 +19,22 @@ public:
 
 void BigNumber::moveDec(int where){
     int index = num.find('.');
-    cout << index << endl;
+
     //adds extra 0's
-    while(where+index>=num.size()-1){
-        num+='0';
-    }
+    while((index+where)>=int(num.size()-1))
+        num+='0';    
     while(index+where <= 0){
         num='0'+num;
         index++;
-        cout << index << endl;
     }
     
     //shift and replace
-    if(where > 0){
+    if(where > 0)
         for(int i = index;i<index+where;i++)
             num[i] = num [i+1];
-    }
-    else{
+    else
         for(int i = index;i>index+where;i--)
-            num[i] = num [i-1];
-    }
+            num[i] = num [i-1];    
     num[index+where]='.';        
 }
 
@@ -49,7 +45,7 @@ string BigNumber::operator + (BigNumber n){
         int d1 = nstring[nstring.size()-1]-48, d2 = num[num.size()-1]-48;
         int sum = d1+d2;
         if(sum>=10){//carryout
-
+            
         }
     }
     return result;
