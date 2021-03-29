@@ -8,34 +8,26 @@ def is_terminal_state():
     return True
 
 def fetch_rewards(row,col): #will return 13 if picking up or dropping off, otherwise just -1
-    global P, D, X
-    cmp = [row,col]
-
     if(X==1):
         for zone in range(len(Dzones)):
-            if(cmp == Dzones[zone] and D[zone] < 4):
+            if([row,col] == Dzones[zone] and D[zone] < 4):
                 return 13
-
     if(X==0):
         for zone in range(len(Pzones)):
-            if(cmp == Pzones[zone] and P[zone] > 0):
+            if([row,col] == Pzones[zone] and P[zone] > 0):
                 return 13
-
     return -1
 
 def toggle_block(row,col):
-    global P, D, X
-    cmp = [row,col]
-
+    global P,D,X
     if(X==1):
         for zone in range(len(Dzones)):
-            if(cmp == Dzones[zone] and D[zone] < 4):
+            if([row,col] == Dzones[zone] and D[zone] < 4):
                 X = 0
                 D[zone]+=1
-
     if(X==0):
         for zone in range(len(Pzones)):
-            if(cmp == Pzones[zone] and P[zone] > 0):
+            if([row,col]== Pzones[zone] and P[zone] > 0):
                 X = 1
                 P[zone]-=1                
 
@@ -126,23 +118,7 @@ def run(steps,learning_rate,discount_factor,policy,sarsa,visual): #runs for each
         init()
         rewards = 0
         moves = 0
-        while not is_terminal_state() and step < steps:
-            moves+=1
-            step+=1
-            if visual:
-                global P,D,X
-                grid = [[D[0],0,0,0,D[1]],
-                [0,0,0,0,0],
-                [0,0,D[2],0,P[0]],
-                [0,P[1],0,0,0],
-                [0,0,0,0,D[3]]]
-
-                grid[current_row_index][current_column_index] = -1
-
-                for row in grid:
-                    print(row)
-                print()           
-            
+        while not is_terminal_state() and step < steps:        
             stuv()
             action_index = get_next_action(policy)        
             
@@ -160,9 +136,29 @@ def run(steps,learning_rate,discount_factor,policy,sarsa,visual): #runs for each
                 temporal_difference = reward + (discount_factor * np.max(q_values[current_row_index,current_column_index,X,S,T,U,V])) - old_q_value
 
             new_q_value = old_q_value + (learning_rate * temporal_difference)
-            q_values[old_row_index, old_column_index, X,S,T,U,V, action_index] = new_q_value
+            q_values[old_row_index, old_column_index, X, S,T,U,V, action_index] = new_q_value
+            
+            if(reward == 13):
+                toggle_block(current_row_index,current_column_index)
+            
+            if([current_row_index,current_column_index] != [old_row_index,old_column_index]):
+                moves+=1
+                step+=1
+                if visual:
+                    grid = [[D[0],0,0,0,D[1]],
+                    [0,0,0,0,0],
+                    [0,0,D[2],0,P[0]],
+                    [0,P[1],0,0,0],
+                    [0,0,0,0,D[3]]]
+                    
+                    if(X == 1):
+                        grid[current_row_index][current_column_index] = -2
+                    else:
+                        grid[current_row_index][current_column_index] = -1
 
-            toggle_block(current_row_index,current_column_index)
+                    for row in grid:
+                        print(row)
+                    print() 
     
         reward_avg.append(rewards)
         move_avg.append(moves)
