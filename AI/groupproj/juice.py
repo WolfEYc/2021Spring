@@ -118,51 +118,54 @@ def init(): #reinitializes values
     current_column_index = start_col
 
 
-def run(learning_rate,discount_factor,policy,sarsa,visual): #runs for each expirement
-    init()
+def run(steps,learning_rate,discount_factor,policy,sarsa,visual): #runs for each expirement
     global P,D,X,current_row_index,current_column_index,q_values,reward_avg,move_avg
-    rewards = 0
-    moves = 0
-    while not is_terminal_state():
-        moves+=1
-        if visual:
-            global P,D,X
-            grid = [[D[0],0,0,0,D[1]],
-            [0,0,0,0,0],
-            [0,0,D[2],0,P[0]],
-            [0,P[1],0,0,0],
-            [0,0,0,0,D[3]]]
+    step = 0
 
-            grid[current_row_index][current_column_index] = -1
+    while step < steps:
+        init()
+        rewards = 0
+        moves = 0
+        while not is_terminal_state() and step < steps:
+            moves+=1
+            step+=1
+            if visual:
+                global P,D,X
+                grid = [[D[0],0,0,0,D[1]],
+                [0,0,0,0,0],
+                [0,0,D[2],0,P[0]],
+                [0,P[1],0,0,0],
+                [0,0,0,0,D[3]]]
 
-            for row in grid:
-                print(row)
-            print()           
-        
-        stuv()
-        action_index = get_next_action(policy)        
-        
-        old_row_index, old_column_index = current_row_index, current_column_index
-        current_row_index, current_column_index = get_next_location(action_index)
+                grid[current_row_index][current_column_index] = -1
 
-        reward = fetch_rewards(current_row_index,current_column_index)
-        rewards+=reward
-        
-        old_q_value = q_values[old_row_index,old_column_index,X,S,T,U,V,action_index]
+                for row in grid:
+                    print(row)
+                print()           
+            
+            stuv()
+            action_index = get_next_action(policy)        
+            
+            old_row_index, old_column_index = current_row_index, current_column_index
+            current_row_index, current_column_index = get_next_location(action_index)
 
-        if sarsa:
-            temporal_difference = reward + (discount_factor * q_values[current_row_index,current_column_index,X,S,T,U,V][get_next_action(policy)]) - old_q_value
-        else:
-            temporal_difference = reward + (discount_factor * np.max(q_values[current_row_index,current_column_index,X,S,T,U,V])) - old_q_value
+            reward = fetch_rewards(current_row_index,current_column_index)
+            rewards+=reward
+            
+            old_q_value = q_values[old_row_index,old_column_index,X,S,T,U,V,action_index]
 
-        new_q_value = old_q_value + (learning_rate * temporal_difference)
-        q_values[old_row_index, old_column_index, X,S,T,U,V, action_index] = new_q_value
+            if sarsa:
+                temporal_difference = reward + (discount_factor * q_values[current_row_index,current_column_index,X,S,T,U,V][get_next_action(policy)]) - old_q_value
+            else:
+                temporal_difference = reward + (discount_factor * np.max(q_values[current_row_index,current_column_index,X,S,T,U,V])) - old_q_value
 
-        toggle_block(current_row_index,current_column_index)
+            new_q_value = old_q_value + (learning_rate * temporal_difference)
+            q_values[old_row_index, old_column_index, X,S,T,U,V, action_index] = new_q_value
 
+            toggle_block(current_row_index,current_column_index)
     
-    reward_avg.append(rewards)
-    move_avg.append(moves)
+        reward_avg.append(rewards)
+        move_avg.append(moves)
 
 def avgs():
     global move_avg, reward_avg
@@ -177,11 +180,8 @@ def Q_reset():
     global q_values
     q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4))
 
-def expirement(runs,learning_rate,discount_factor,policy,sarsa):
-    for r in range(runs):
-        run(learning_rate,discount_factor,policy,sarsa,False)
 
-    
+
 
 # variable init------------------------
 
@@ -218,31 +218,31 @@ q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4))
 print('Expirement 1')
 
 print('a.')
-expirement(6000,0.3,0.5,'PRandom',False)
+run(6000,0.3,0.5,'PRandom',False,False)
 avgs()
 Q_reset()
 
 print('b.')
-expirement(500,0.3,0.5,'PRandom',False)
-expirement(5500,0.3,0.5,'PGreedy',False)
+run(500,0.3,0.5,'PRandom',False,False)
+run(5500,0.3,0.5,'PGreedy',False,False)
 avgs()
 Q_reset()
 
 print('c.')
-expirement(500,0.3,0.5,'PRandom',False)
-expirement(5500,0.3,0.5,'PExploit',False)
+run(500,0.3,0.5,'PRandom',False,False)
+run(5500,0.3,0.5,'PExploit',False,False)
 avgs()
 Q_reset()
 
 print('Expirement 2')
-expirement(500,0.3,0.5,'PRandom',True)
-expirement(5500,0.3,0.5,'PExploit',True)
+run(500,0.3,0.5,'PRandom',True,False)
+run(5500,0.3,0.5,'PExploit',True,False)
 avgs()
 Q_reset()
 
 print('Expirement 3')
-expirement(500,0.15,0.45,'PRandom',False)
-expirement(5500,0.15,0.45,'PExploit',False)
+run(500,0.15,0.45,'PRandom',False,False)
+run(5500,0.15,0.45,'PExploit',False,True)
 avgs()
 Q_reset()
 
