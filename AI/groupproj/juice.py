@@ -1,7 +1,7 @@
 #import libraries
 import numpy as np
 
-def is_terminal_state():
+def is_terminal_state(): #checks if state is terminal or not
     for i in D:
         if(i != 4):
             return False
@@ -18,7 +18,7 @@ def fetch_rewards(row,col): #will return 13 if picking up or dropping off, other
                 return 13
     return -1
 
-def toggle_block(row,col):
+def toggle_block(row,col): #will pickup or dropoff if available
     global P,D,X
     if(X==1):
         for zone in range(len(Dzones)):
@@ -31,7 +31,7 @@ def toggle_block(row,col):
                 X = 1
                 P[zone]-=1                
 
-def stuv():
+def stuv(): #sets STUV to correct values (read slide 10 in pptx)
     global S, T, U, V
     if(X==1):
         if(D[0] == 4):
@@ -50,7 +50,6 @@ def stuv():
             V = 0
         else:
             V = 1
-
     if(X==0):
         if(P[0] == 0):
             S = 0
@@ -63,15 +62,7 @@ def stuv():
         U = 0
         V = 0
 
-def get_next_action(policy):
-    if(fetch_rewards(current_row_index-1,current_column_index)==13):
-        return 0
-    if(fetch_rewards(current_row_index,current_column_index+1)==13):
-        return 1
-    if(fetch_rewards(current_row_index+1,current_column_index)==13):
-        return 2
-    if(fetch_rewards(current_row_index,current_column_index-1)==13):
-        return 3
+def get_next_action(policy): #gets next action based on policy
     if(policy == 'PGreedy'):
         return np.argmax(q_values[current_row_index,current_column_index,X,S,T,U,V])
     if(policy == 'PRandom'):
@@ -82,7 +73,7 @@ def get_next_action(policy):
         else:
             return np.random.randint(4)
 
-def get_next_location(action_index):
+def get_next_location(action_index): #gets next location based on action index
     new_row_index = current_row_index
     new_column_index = current_column_index
     if actions[action_index] == 'up' and current_row_index > 0:
@@ -109,25 +100,20 @@ def init(): #reinitializes values
     current_row_index = start_row
     current_column_index = start_col
 
-
-def run(steps,learning_rate,discount_factor,policy,sarsa,visual): #runs for each expirement
+def run(steps,terminals_allowed,learning_rate,discount_factor,policy,sarsa,visual): #runs for each expirement
     global P,D,X,current_row_index,current_column_index,q_values,reward_avg,move_avg
     step = 0
-
-    while step < steps:
-        init()
+    terminals = 0
+    while step < steps and (terminals_allowed==-1 or terminals < terminals_allowed):
         rewards = 0
         moves = 0
         while not is_terminal_state() and step < steps:        
             stuv()
-            action_index = get_next_action(policy)        
-            
+            action_index = get_next_action(policy)            
             old_row_index, old_column_index = current_row_index, current_column_index
             current_row_index, current_column_index = get_next_location(action_index)
-
             reward = fetch_rewards(current_row_index,current_column_index)
-            rewards+=reward
-            
+            rewards+=reward          
             old_q_value = q_values[old_row_index,old_column_index,X,S,T,U,V,action_index]
 
             if sarsa:
@@ -158,88 +144,98 @@ def run(steps,learning_rate,discount_factor,policy,sarsa,visual): #runs for each
 
                     for row in grid:
                         print(row)
-                    print() 
-    
-        reward_avg.append(rewards)
-        move_avg.append(moves)
+                    print()
+        
+        reward_avg[len(reward_avg)-1] += rewards #adds ending rewards and moves to rewards and moves list
+        move_avg[len(move_avg)-1] += moves
 
-def avgs():
+        if is_terminal_state(): #starts adding to next rewards and moves list, also resets world
+            init()
+            terminals+=1
+            reward_avg.append(0)
+            move_avg.append(0)        
+
+def avgs(): #prints the report of each expirement and reinits report for next expirement
     global move_avg, reward_avg
-    avg_rewards = sum(reward_avg)/len(reward_avg)
-    avg_moves = sum(move_avg)/len(move_avg)
-    print('Average Reward: ',avg_rewards)
-    print('Average Moves: ',avg_moves)
-    move_avg = []
-    reward_avg = []
+    if not is_terminal_state(): #removes last dataset if terminal state not reached
+        move_avg.pop()
+        reward_avg.pop()
+    avg_rewards = int(sum(reward_avg)/len(reward_avg))
+    avg_moves = int(sum(move_avg)/len(move_avg))
+    
+    print('\nTerminal States Reached:',len(move_avg))
+    print('Average Rewards:',avg_rewards)
+    print('Average Moves:',avg_moves)
+    print('Smartness:',"{:.2f}".format(avg_rewards/avg_moves),'\n')
 
-def Q_reset():
+    for i in range(len(move_avg)):
+        print(i+1,'Rewards:',reward_avg[i],'Moves:',move_avg[i])
+        
+    move_avg = [0]
+    reward_avg = [0]
+    Q_reset()
+
+def Q_reset(): #resets the Q-table and World
     global q_values
     q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4))
+    init()
 
-
-
-
-# variable init------------------------
-
-environment_rows = 5
+environment_rows = 5 #grid init
 environment_columns = 5
 
-reward_avg = []
-move_avg = []
+reward_avg = [0] #list of rewards fetched from each terminal state in a run
+move_avg = [0] #same for moves
 
 actions = ['up', 'right', 'down', 'left']
 
 P = [8,8] #pickup locations block counts
 D = [0,0,0,0] #dropoff locations block counts
 X = 0 #agent carrying block or not
+S = 1 #read pptx slide 10
+T = 1
+U = 0
+V = 0
 
-Pzones = [[2,4],[3,1]]
+Pzones = [[2,4],[3,1]] # Changing these values will allow you to change pickup and dropoff locations
 Dzones = [[0,0],[0,4],[2,2],[4,4]]
 
-#designate pickup possibilities
-S = 1
-T = 1
-U = 1
-V = 1
-
-start_row = 4
+start_row = 4 #set this anywhere in the code if you want to change the start pos
 start_col = 0
 
-q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4))
+current_row_index = start_row #sets current pos to start pos initially
+current_column_index = start_col
 
-#finish variable init-----------------
+q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4)) #read slide 10 in pptx
 
-#running expirements-------------
+print('\nExpirement 1')
 
-print('Expirement 1')
-
-print('a.')
-run(6000,0.3,0.5,'PRandom',False,False)
+print('\na.')
+run(6000,-1,0.3,0.5,'PRandom',False,False)
 avgs()
-Q_reset()
 
-print('b.')
-run(500,0.3,0.5,'PRandom',False,False)
-run(5500,0.3,0.5,'PGreedy',False,False)
+print('\nb.')
+run(500,-1,0.3,0.5,'PRandom',False,False)
+run(5500,-1,0.3,0.5,'PGreedy',False,False)
 avgs()
-Q_reset()
 
-print('c.')
-run(500,0.3,0.5,'PRandom',False,False)
-run(5500,0.3,0.5,'PExploit',False,False)
+print('\nc.')
+run(500,-1,0.3,0.5,'PRandom',False,False)
+run(5500,-1,0.3,0.5,'PExploit',False,False)
 avgs()
-Q_reset()
 
-print('Expirement 2')
-run(500,0.3,0.5,'PRandom',True,False)
-run(5500,0.3,0.5,'PExploit',True,False)
+print('\nExpirement 2')
+run(500,-1,0.3,0.5,'PRandom',True,False)
+run(5500,-1,0.3,0.5,'PExploit',True,False)
 avgs()
-Q_reset()
 
-print('Expirement 3')
-run(500,0.15,0.45,'PRandom',False,False)
-run(5500,0.15,0.45,'PExploit',False,True)
+print('\nExpirement 3')
+run(500,-1,0.15,0.45,'PRandom',False,False)
+run(5500,-1,0.15,0.45,'PExploit',False,False)
 avgs()
-Q_reset()
 
-
+print('\nExpirement 4')
+run(500,-1,0.3,0.5,'PRandom',False,False)
+run(5500,3,0.3,0.5,'PExploit',False,False)
+Pzones = [[1,3],[3,1]]
+run(5500,3,0.3,0.5,'PExploit',False,False)
+avgs()
