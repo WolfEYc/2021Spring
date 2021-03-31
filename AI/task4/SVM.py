@@ -1,6 +1,7 @@
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_validate
 from sklearn.metrics import classification_report
 import pandas as pd
 import numpy as np
@@ -24,29 +25,42 @@ X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
 
 linear_svc = svm.SVC(kernel='linear',random_state=1).fit(X_train,y_train)
 rbf_svc = svm.SVC(kernel='rbf',random_state=2).fit(X_train,y_train)
+relu_MLP = MLPClassifier(activation='relu',max_iter=3000,random_state=3).fit(X_train,y_train)
+tanh_MLP = MLPClassifier(activation='tanh',max_iter=3000,random_state=4).fit(X_train,y_train)
 
-relu_MLP = MLPClassifier(activation='relu',max_iter=300,random_state=3).fit(X_train,y_train)
-tanh_MLP = MLPClassifier(activation='tanh',max_iter=300,random_state=4).fit(X_train,y_train)
+linear_cv10 = cross_validate(linear_svc,X_test,y=y_test,cv=10)
+rbf_cv10 = cross_validate(rbf_svc,X_test,y=y_test,cv=10)
+relu_cv10 = cross_validate(relu_MLP,X_test,y=y_test,cv=10)
+tanh_cv10 = cross_validate(tanh_MLP,X_test,y=y_test,cv=10)
 
-linear_y_predict = linear_svc.predict(X_test)
-rbf_y_predict = rbf_svc.predict(X_test)
-relu_y_predict = relu_MLP.predict(X_test)
-tanh_y_predict = tanh_MLP.predict(X_test)
+xlim = axes.get_xlim()
+ylim = axes.get_ylim()
+x = np.linspace(xlim[0], xlim[1], 30)
+y = np.linspace(ylim[0], ylim[1], 30)
+Y, X = np.meshgrid(y, x)
+xy = np.vstack([X.ravel(), Y.ravel()]).T
+L = linear_svc.decision_function(xy).reshape(X.shape)
+Rbf = rbf_svc.decision_function(xy).reshape(X.shape)
+
+axes.contour(X, Y, L, colors='grey',
+               levels=[-1, 0, 1], alpha=0.5,
+               linestyles=['--', '-', '--'])
+
+axes.contour(X, Y, Rbf, colors='purple',
+               levels=[-1, 0, 1], alpha=0.5,
+               linestyles=['--', '-', '--'])
 
 print('\nLinear Kernel')
-print('accuracy:',int(100*linear_svc.score(X_test,y_test)),'%')
-print(classification_report(y_test,linear_y_predict))
+print('accuracy:',int(100*np.mean(linear_cv10['test_score'])),'%')
 
 print('\nRBF Kernel')
-print('accuracy:',int(100*rbf_svc.score(X_test,y_test)),'%')
-print(classification_report(y_test,rbf_y_predict))
+print('accuracy:',int(100*np.mean(rbf_cv10['test_score'])),'%')
 
 print('\nRelu MLP')
-print('accuracy:',int(100*relu_MLP.score(X_test,y_test)),'%')
-print(classification_report(y_test,relu_y_predict))
+print('accuracy:',int(100*np.mean(relu_cv10['test_score'])),'%')
 
 print('\nTanh MLP')
-print('accuracy:',int(100*relu_MLP.score(X_test,y_test)),'%')
-print(classification_report(y_test,tanh_y_predict))
+print('accuracy:',int(100*np.mean(tanh_cv10['test_score'])),'%')
+
 
 plt.show()

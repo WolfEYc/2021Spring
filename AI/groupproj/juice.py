@@ -1,16 +1,17 @@
 #import libraries
 import numpy as np
+import pygame
 
 def is_terminal_state(): #checks if state is terminal or not
     for i in D:
-        if(i != 4):
+        if(i != max_blocks):
             return False
     return True
 
 def fetch_rewards(row,col): #will return 13 if picking up or dropping off, otherwise just -1
     if(X==1):
         for zone in range(len(Dzones)):
-            if([row,col] == Dzones[zone] and D[zone] < 4):
+            if([row,col] == Dzones[zone] and D[zone] < max_blocks):
                 return 13
     if(X==0):
         for zone in range(len(Pzones)):
@@ -22,7 +23,7 @@ def toggle_block(row,col): #will pickup or dropoff if available
     global P,D,X
     if(X==1):
         for zone in range(len(Dzones)):
-            if([row,col] == Dzones[zone] and D[zone] < 4):
+            if([row,col] == Dzones[zone] and D[zone] < max_blocks):
                 X = 0
                 D[zone]+=1
     if(X==0):
@@ -31,45 +32,38 @@ def toggle_block(row,col): #will pickup or dropoff if available
                 X = 1
                 P[zone]-=1                
 
-def stuv(): #sets STUV to correct values (read slide 10 in pptx)
-    global S, T, U, V
-    if(X==1):
-        if(D[0] == 4):
-            S = 0
-        else:
-            S = 1
-        if(D[1] == 4):
-            T = 0
-        else:
-            T = 1
-        if(D[2] == 4):
-            U = 0
-        else:
-            U = 1
-        if(D[3] == 4):
-            V = 0
-        else:
-            V = 1
-    if(X==0):
-        if(P[0] == 0):
-            S = 0
-        else:
-            S = 1
-        if(P[1] == 0):
-            T = 0
-        else:
-            T = 1
-        U = 0
-        V = 0
+def biDec(bi): #not accurate btw but it works lol
+    dec = 0
+    for i in range(len(S)):
+        if S[i] == 1:
+            dec += i
+    return dec
 
-def get_next_action(policy): #gets next action based on policy
+def stuv(): #sets STUV to correct values (read slide 10 in pptx)
+    global S
+    if(X==1):
+        for zone in range(len(S)):
+            if zone < len(D) and D[zone] < max_blocks:
+                S[zone] = 1
+            else:
+                S[zone] = 0        
+    if(X==0):
+        for zone in range(len(S)):
+            if zone < len(P) and P[zone] > 0:
+                S[zone] = 1
+            else:
+                S[zone] = 0
+    
+    return biDec(S)
+
+def get_next_action(policy,s): #gets next action based on policy
     if(policy == 'PGreedy'):
-        return np.argmax(q_values[current_row_index,current_column_index,X,S,T,U,V])
+        return np.argmax(q_values[current_row_index,current_column_index,X,s])
     if(policy == 'PRandom'):
         return np.random.randint(4)
     if(policy == 'PExploit'):
         if(np.random.random() < 0.8):
-            return np.argmax(q_values[current_row_index,current_column_index,X,S,T,U,V])
+            return np.argmax(q_values[current_row_index,current_column_index,X,s])
         else:
             return np.random.randint(4)
 
@@ -89,13 +83,9 @@ def get_next_location(action_index): #gets next location based on action index
 
 def init(): #reinitializes values
     global P, D, X, current_row_index, current_column_index
-    P = [8,8]
-    D = [0,0,0,0]
-    X = 0
-    S = 1
-    T = 1
-    U = 0
-    V = 0
+    P = np.full(len(Pzones),start_blocks) #pickup locations block counts
+    D = np.full(len(Dzones),0) #dropoff locations block counts
+    X = 0  
 
     current_row_index = start_row
     current_column_index = start_col
@@ -108,21 +98,21 @@ def run(steps,terminals_allowed,learning_rate,discount_factor,policy,sarsa,visua
         rewards = 0
         moves = 0
         while not is_terminal_state() and step < steps:        
-            stuv()
-            action_index = get_next_action(policy)            
+            s = stuv()
+            action_index = get_next_action(policy,s)            
             old_row_index, old_column_index = current_row_index, current_column_index
             current_row_index, current_column_index = get_next_location(action_index)
             reward = fetch_rewards(current_row_index,current_column_index)
             rewards+=reward          
-            old_q_value = q_values[old_row_index,old_column_index,X,S,T,U,V,action_index]
+            old_q_value = q_values[old_row_index,old_column_index,X,s,action_index]
 
             if sarsa:
-                temporal_difference = reward + (discount_factor * q_values[current_row_index,current_column_index,X,S,T,U,V][get_next_action(policy)]) - old_q_value
+                temporal_difference = reward + (discount_factor * q_values[current_row_index,current_column_index,X,s,get_next_action(policy,s)]) - old_q_value
             else:
-                temporal_difference = reward + (discount_factor * np.max(q_values[current_row_index,current_column_index,X,S,T,U,V])) - old_q_value
+                temporal_difference = reward + (discount_factor * np.max(q_values[current_row_index,current_column_index,X,s])) - old_q_value
 
             new_q_value = old_q_value + (learning_rate * temporal_difference)
-            q_values[old_row_index, old_column_index, X, S,T,U,V, action_index] = new_q_value
+            q_values[old_row_index, old_column_index, X, s, action_index] = new_q_value
             
             if(reward == 13):
                 toggle_block(current_row_index,current_column_index)
@@ -131,20 +121,29 @@ def run(steps,terminals_allowed,learning_rate,discount_factor,policy,sarsa,visua
                 moves+=1
                 step+=1
                 if visual:
-                    grid = [[D[0],0,0,0,D[1]],
-                    [0,0,0,0,0],
-                    [0,0,D[2],0,P[0]],
-                    [0,P[1],0,0,0],
-                    [0,0,0,0,D[3]]]
-                    
-                    if(X == 1):
-                        grid[current_row_index][current_column_index] = -2
-                    else:
-                        grid[current_row_index][current_column_index] = -1
+                    gameDisplay.fill(black)
 
-                    for row in grid:
-                        print(row)
-                    print()
+                    if(X == 1):
+                        pygame.draw.rect(gameDisplay,red,(current_column_index*50,current_row_index*50,50,50))
+                    else:
+                        pygame.draw.rect(gameDisplay,darkred,(current_column_index*50,current_row_index*50,50,50))
+
+                    for zone in range(len(Dzones)):
+                        num = font.render(str(D[zone]),True,white)
+                        gameDisplay.blit(num,(Dzones[zone][1]*50+17,Dzones[zone][0]*50+12))
+                        pygame.draw.rect(gameDisplay,green,(Dzones[zone][1]*50,Dzones[zone][0]*50,50,50),3)
+
+                    for zone in range(len(Pzones)):
+                        num = font.render(str(P[zone]),True,white)
+                        gameDisplay.blit(num,(Pzones[zone][1]*50+17,Pzones[zone][0]*50+12))
+                        pygame.draw.rect(gameDisplay,blue,(Pzones[zone][1]*50,Pzones[zone][0]*50,50,50),3)
+                    
+                    pygame.display.update()
+                    clock.tick(15)
+
+                    for event in pygame.event.get(): #closes window for that run
+                        if event.type == pygame.QUIT:
+                            visual = False
         
         reward_avg[len(reward_avg)-1] += rewards #adds ending rewards and moves to rewards and moves list
         move_avg[len(move_avg)-1] += moves
@@ -166,7 +165,7 @@ def avgs(): #prints the report of each expirement and reinits report for next ex
     print('\nTerminal States Reached:',len(move_avg))
     print('Average Rewards:',avg_rewards)
     print('Average Moves:',avg_moves)
-    print('Smartness:',"{:.2f}".format(avg_rewards/avg_moves),'\n')
+    print('Smartness:',"{:.2f}".format(reward_avg[len(reward_avg)-1]/move_avg[len(move_avg)-1]),'\n')
 
     for i in range(len(move_avg)):
         print(i+1,'Rewards:',reward_avg[i],'Moves:',move_avg[i])
@@ -176,28 +175,43 @@ def avgs(): #prints the report of each expirement and reinits report for next ex
     Q_reset()
 
 def Q_reset(): #resets the Q-table and World
-    global q_values
-    q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4))
+    global q_values,S,gameDisplay
     init()
+    S = np.zeros((np.max([len(D),len(P)])))
+    gameDisplay = pygame.display.set_mode((environment_columns*50,environment_rows*50))
+    q_values = np.zeros((environment_rows, environment_columns,2, pow(len(S),2), 4))
+    
+
+pygame.init()
+
+sysfont = pygame.font.get_default_font()
+font = pygame.font.SysFont(None, 40)
+
+white = (255,255,255)
+black = (0,0,0)
+green = (0,255,0)
+blue = (0,0,255)
+darkred = (100,0,0)
+red = (255,0,0)
 
 environment_rows = 5 #grid init
 environment_columns = 5
+
+max_blocks = 4 #dropoff allowed
+start_blocks = 8 #starting blocks in p zones
 
 reward_avg = [0] #list of rewards fetched from each terminal state in a run
 move_avg = [0] #same for moves
 
 actions = ['up', 'right', 'down', 'left']
 
-P = [8,8] #pickup locations block counts
-D = [0,0,0,0] #dropoff locations block counts
-X = 0 #agent carrying block or not
-S = 1 #read pptx slide 10
-T = 1
-U = 0
-V = 0
-
 Pzones = [[2,4],[3,1]] # Changing these values will allow you to change pickup and dropoff locations
 Dzones = [[0,0],[0,4],[2,2],[4,4]]
+
+P = np.full(len(Pzones),start_blocks) #pickup locations block counts
+D = np.full(len(Dzones),0) #dropoff locations block counts
+X = 0 #agent carrying block or not
+S = np.zeros((np.max([len(D),len(P)]))) #read pptx slide 10
 
 start_row = 4 #set this anywhere in the code if you want to change the start pos
 start_col = 0
@@ -205,7 +219,12 @@ start_col = 0
 current_row_index = start_row #sets current pos to start pos initially
 current_column_index = start_col
 
-q_values = np.zeros((environment_rows, environment_columns,2, 2,2,2,2, 4)) #read slide 10 in pptx
+q_values = np.zeros((environment_rows, environment_columns,2, pow(len(S),2), 4)) #read slide 10 in pptx
+
+gameDisplay = pygame.display.set_mode((environment_columns*50,environment_rows*50))
+pygame.display.set_caption('PD World')
+
+clock = pygame.time.Clock()
 
 print('\nExpirement 1')
 
@@ -215,27 +234,41 @@ avgs()
 
 print('\nb.')
 run(500,-1,0.3,0.5,'PRandom',False,False)
-run(5500,-1,0.3,0.5,'PGreedy',False,False)
+run(5500,-1,0.3,0.5,'PGreedy',False,True)
 avgs()
 
 print('\nc.')
 run(500,-1,0.3,0.5,'PRandom',False,False)
-run(5500,-1,0.3,0.5,'PExploit',False,False)
+run(5500,-1,0.3,0.5,'PExploit',False,True)
 avgs()
 
 print('\nExpirement 2')
 run(500,-1,0.3,0.5,'PRandom',True,False)
-run(5500,-1,0.3,0.5,'PExploit',True,False)
+run(5500,-1,0.3,0.5,'PExploit',True,True)
 avgs()
 
 print('\nExpirement 3')
 run(500,-1,0.15,0.45,'PRandom',False,False)
-run(5500,-1,0.15,0.45,'PExploit',False,False)
+run(5500,-1,0.15,0.45,'PExploit',False,True)
 avgs()
 
 print('\nExpirement 4')
 run(500,-1,0.3,0.5,'PRandom',False,False)
-run(5500,3,0.3,0.5,'PExploit',False,False)
+run(5500,3,0.3,0.5,'PExploit',False,True)
 Pzones = [[1,3],[3,1]]
-run(5500,3,0.3,0.5,'PExploit',False,False)
+run(5500,3,0.3,0.5,'PExploit',False,True)
 avgs()
+
+print('\nExpirement 5')
+environment_rows = 10
+environment_columns = 10
+start_row = 4
+start_col = 4
+Dzones = [[0,0],[9,0],[0,9],[9,9],[4,4]]
+Pzones = [[2,2],[6,6],[7,3]]
+Q_reset()
+run(6000,-1,0.3,0.5,'PRandom',False,False)
+run(600000,-1,0.3,0.5,'PExploit',False,False)
+run(6000,-1,0.3,0.5,'PGreedy',True,True)
+avgs()
+
