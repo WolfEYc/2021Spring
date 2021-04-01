@@ -90,7 +90,7 @@ def init(): #reinitializes values
     current_row_index = start_row
     current_column_index = start_col
 
-def run(steps,terminals_allowed,learning_rate,discount_factor,policy,sarsa,visual): #runs for each expirement
+def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy='PExploit',sarsa=False,visual=False): #runs for each expirement
     global P,D,X,current_row_index,current_column_index,q_values,reward_avg,move_avg
     step = 0
     terminals = 0
@@ -229,34 +229,34 @@ clock = pygame.time.Clock()
 print('\nExpirement 1')
 
 print('\na.')
-run(6000,-1,0.3,0.5,'PRandom',False,False)
+run(steps=6000,policy='PRandom')
 avgs()
 
 print('\nb.')
-run(500,-1,0.3,0.5,'PRandom',False,False)
-run(5500,-1,0.3,0.5,'PGreedy',False,True)
+run(steps=500,policy='PRandom')
+run(steps=5500,policy='PGreedy',visual=True)
 avgs()
 
 print('\nc.')
-run(500,-1,0.3,0.5,'PRandom',False,False)
-run(5500,-1,0.3,0.5,'PExploit',False,True)
+run(steps=500,policy='PRandom')
+run(steps=5500,visual=True)
 avgs()
 
 print('\nExpirement 2')
-run(500,-1,0.3,0.5,'PRandom',True,False)
-run(5500,-1,0.3,0.5,'PExploit',True,True)
+run(steps=500,policy='PRandom',sarsa=True)
+run(steps=5500,sarsa=True,visual=True)
 avgs()
 
 print('\nExpirement 3')
-run(500,-1,0.15,0.45,'PRandom',False,False)
-run(5500,-1,0.15,0.45,'PExploit',False,True)
+run(steps=500,learning_rate=0.15,discount_factor=0.45,policy='PRandom')
+run(steps=5500,learning_rate=0.15,discount_factor=0.45,visual=True)
 avgs()
 
 print('\nExpirement 4')
-run(500,-1,0.3,0.5,'PRandom',False,False)
-run(5500,3,0.3,0.5,'PExploit',False,True)
+run(steps=500,policy='PRandom')
+run(steps=5500,terminals_allowed=3,visual=True)
 Pzones = [[1,3],[3,1]]
-run(5500,3,0.3,0.5,'PExploit',False,True)
+run(steps=5500,terminals_allowed=3,visual=True)
 avgs()
 
 print('\nExpirement 5')
@@ -267,8 +267,8 @@ start_col = 4
 Dzones = [[0,0],[9,0],[0,9],[9,9],[4,4]]
 Pzones = [[2,2],[6,6],[7,3]]
 Q_reset()
-run(6000,-1,0.3,0.5,'PRandom',False,False)
-run(600000,-1,0.3,0.5,'PExploit',False,False)
-run(6000,-1,0.3,0.5,'PGreedy',True,True)
+run(steps=6000,policy='PRandom')
+run(steps=600000)
+run(steps=6000,policy='PGreedy',visual=True)
 avgs()
 

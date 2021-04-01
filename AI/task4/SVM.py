@@ -2,6 +2,7 @@ from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_validate
+from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import classification_report
 import pandas as pd
 import numpy as np
@@ -33,6 +34,16 @@ rbf_cv10 = cross_validate(rbf_svc,X_test,y=y_test,cv=10)
 relu_cv10 = cross_validate(relu_MLP,X_test,y=y_test,cv=10)
 tanh_cv10 = cross_validate(tanh_MLP,X_test,y=y_test,cv=10)
 
+linear_y_pred = cross_val_predict(linear_svc,X_test,y=y_test,cv=10)
+rbf_y_pred = cross_val_predict(rbf_svc,X_test,y=y_test,cv=10)
+relu_y_pred = cross_val_predict(relu_MLP,X_test,y=y_test,cv=10)
+tanh_y_pred = cross_val_predict(tanh_MLP,X_test,y=y_test,cv=10)
+
+linear_report = classification_report(y_test,linear_y_pred)
+rbf_report = classification_report(y_test,rbf_y_pred)
+relu_report = classification_report(y_test,relu_y_pred)
+tanh_report = classification_report(y_test,tanh_y_pred)
+
 xlim = axes.get_xlim()
 ylim = axes.get_ylim()
 x = np.linspace(xlim[0], xlim[1], 30)
@@ -52,15 +63,19 @@ axes.contour(X, Y, Rbf, colors='purple',
 
 print('\nLinear Kernel')
 print('accuracy:',int(100*np.mean(linear_cv10['test_score'])),'%')
+print(linear_report)
 
 print('\nRBF Kernel')
 print('accuracy:',int(100*np.mean(rbf_cv10['test_score'])),'%')
+print(rbf_report)
 
 print('\nRelu MLP')
 print('accuracy:',int(100*np.mean(relu_cv10['test_score'])),'%')
+print(relu_report)
 
 print('\nTanh MLP')
 print('accuracy:',int(100*np.mean(tanh_cv10['test_score'])),'%')
+print(tanh_report)
 
 
 plt.show()
