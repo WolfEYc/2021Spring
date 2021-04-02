@@ -77,5 +77,6 @@
         "variant": "cpp"
     },
     "terminal.integrated.shell.windows": "cmd.exe",
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "python.pythonPath": "/usr/bin/python3.9"
 }

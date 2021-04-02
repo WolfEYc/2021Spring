@@ -1,5 +1,6 @@
 #import libraries
 import numpy as np
+from numba import jit
 import pygame
 
 def is_terminal_state(): #checks if state is terminal or not
@@ -90,7 +91,7 @@ def init(): #reinitializes values
     current_row_index = start_row
     current_column_index = start_col
 
-def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy='PExploit',sarsa=False,visual=False): #runs for each expirement
+def run(steps=6000,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy='PExploit',sarsa=False,visual=False): #runs for each expirement
     global P,D,X,current_row_index,current_column_index,q_values,reward_avg,move_avg
     step = 0
     terminals = 0
@@ -120,6 +121,7 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
             if([current_row_index,current_column_index] != [old_row_index,old_column_index]):
                 moves+=1
                 step+=1
+
                 if visual:
                     gameDisplay.fill(black)
 
@@ -156,9 +158,11 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
 
 def avgs(): #prints the report of each expirement and reinits report for next expirement
     global move_avg, reward_avg
+
     if not is_terminal_state(): #removes last dataset if terminal state not reached
         move_avg.pop()
         reward_avg.pop()
+
     avg_rewards = int(sum(reward_avg)/len(reward_avg))
     avg_moves = int(sum(move_avg)/len(move_avg))
     
@@ -176,6 +180,7 @@ def avgs(): #prints the report of each expirement and reinits report for next ex
 
 def Q_reset(): #resets the Q-table and World
     global q_values,S,gameDisplay
+
     init()
     S = np.zeros((np.max([len(D),len(P)])))
     gameDisplay = pygame.display.set_mode((environment_columns*50,environment_rows*50))
@@ -223,7 +228,6 @@ q_values = np.zeros((environment_rows, environment_columns,2, pow(len(S),2), 4))
 
 gameDisplay = pygame.display.set_mode((environment_columns*50,environment_rows*50))
 pygame.display.set_caption('PD World')
-
 clock = pygame.time.Clock()
 
 print('\nExpirement 1')
@@ -257,7 +261,7 @@ run(steps=500,policy='PRandom')
 run(steps=5500,terminals_allowed=3,visual=True)
 Pzones = [[1,3],[3,1]]
 run(steps=5500,terminals_allowed=3,visual=True)
-avgs()
+
 
 print('\nExpirement 5')
 environment_rows = 10
@@ -266,7 +270,7 @@ start_row = 4
 start_col = 4
 Dzones = [[0,0],[9,0],[0,9],[9,9],[4,4]]
 Pzones = [[2,2],[6,6],[7,3]]
-Q_reset()
+avgs()
 run(steps=6000,policy='PRandom')
 run(steps=600000)
 run(steps=6000,policy='PGreedy',visual=True)
