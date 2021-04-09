@@ -22,7 +22,7 @@ feature_df = df[['ejection_fraction','serum_creatinine']]
 X = np.asarray(feature_df)
 y = np.asarray(df['DEATH_EVENT'])
 
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=5)
 
 linear_svc = svm.SVC(kernel='linear',random_state=1).fit(X_train,y_train)
 rbf_svc = svm.SVC(kernel='rbf',random_state=2).fit(X_train,y_train)
@@ -76,6 +76,5 @@ print(relu_report)
 print('\nTanh MLP')
 print('accuracy:',int(100*np.mean(tanh_cv10['test_score'])),'%')
 print(tanh_report)
-
 
 plt.show()

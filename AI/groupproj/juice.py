@@ -1,6 +1,4 @@
-#import libraries
 import numpy as np
-from numba import jit
 import pygame
 
 def is_terminal_state(): #checks if state is terminal or not
@@ -37,7 +35,7 @@ def biDec(bi): #not accurate btw but it works lol
     dec = 0
     for i in range(len(S)):
         if S[i] == 1:
-            dec += i
+            dec += i+1
     return dec
 
 def stuv(): #sets STUV to correct values (read slide 10 in pptx)
@@ -53,8 +51,7 @@ def stuv(): #sets STUV to correct values (read slide 10 in pptx)
             if zone < len(P) and P[zone] > 0:
                 S[zone] = 1
             else:
-                S[zone] = 0
-    
+                S[zone] = 0    
     return biDec(S)
 
 def get_next_action(policy,s): #gets next action based on policy
@@ -79,15 +76,13 @@ def get_next_location(action_index): #gets next location based on action index
         new_row_index += 1
     elif actions[action_index] == 'left' and current_column_index > 0:
         new_column_index -= 1
-
     return new_row_index, new_column_index
 
 def init(): #reinitializes values
     global P, D, X, current_row_index, current_column_index
     P = np.full(len(Pzones),start_blocks) #pickup locations block counts
     D = np.full(len(Dzones),0) #dropoff locations block counts
-    X = 0  
-
+    X = 0
     current_row_index = start_row
     current_column_index = start_col
 
@@ -188,7 +183,6 @@ def Q_reset(): #resets the Q-table and World
     
 
 pygame.init()
-
 sysfont = pygame.font.get_default_font()
 font = pygame.font.SysFont(None, 40)
 
@@ -220,7 +214,6 @@ S = np.zeros((np.max([len(D),len(P)]))) #read pptx slide 10
 
 start_row = 4 #set this anywhere in the code if you want to change the start pos
 start_col = 0
-
 current_row_index = start_row #sets current pos to start pos initially
 current_column_index = start_col
 
@@ -262,7 +255,6 @@ run(steps=5500,terminals_allowed=3,visual=True)
 Pzones = [[1,3],[3,1]]
 run(steps=5500,terminals_allowed=3,visual=True)
 
-
 print('\nExpirement 5')
 environment_rows = 10
 environment_columns = 10
@@ -275,4 +267,3 @@ run(steps=6000,policy='PRandom')
 run(steps=600000)
 run(steps=6000,policy='PGreedy',visual=True)
 avgs()
-

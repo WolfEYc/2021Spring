@@ -1,5 +1,4 @@
 def findDupes(a):
-    #write your code here
     tortoise = a[0]
     hare = a[0]
     while True:
