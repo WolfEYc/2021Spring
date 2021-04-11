@@ -96,8 +96,6 @@ int main(){
 
     chase.~Bank();
 
-    chase.showData();
-
     return 0;
 
 }

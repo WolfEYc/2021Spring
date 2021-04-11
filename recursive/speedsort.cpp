@@ -4,27 +4,7 @@
 using namespace std;
 using namespace std::chrono;
 
-void sort(int* arr,int n){
-    for(int l=0, r=n-1; l<r; l++,r--){
-        if(arr[l]>arr[r]){
-            int temp = arr[l];            
-            arr[l] = arr[r];
-            arr[r] = temp;
-        }
-        for(int i = l+1; i < r ; i++){
-            if(arr[i]<arr[l]){                
-                int temp = arr[l];          
-                arr[l] = arr[i];
-                arr[i] = temp;     
-            }
-            else if (arr[i]>arr[r]){
-                int temp = arr[r];           
-                arr[r] = arr[i];
-                arr[i] = temp;                
-            }
-        }
-    }
-}
+
 
 void merge(int arr[], int l, int m, int r)
 {
