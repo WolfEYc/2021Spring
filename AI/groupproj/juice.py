@@ -3,7 +3,7 @@ import numpy as np
 import pygame
 import math
 
-boxSize=50
+boxSize=100
 
 def writeArray(filename):
     with open(filename, 'w') as outfile:
@@ -124,7 +124,7 @@ def makeCustom():
     environment_rows = int(input("rows "))
     environment_columns = int(input("columns "))
 
-    boxSize = 500/(environment_rows)
+    boxSize = 1000/(environment_rows+environment_columns)
 
     gameDisplay = pygame.display.set_mode((int(environment_columns*boxSize),int(environment_rows*boxSize)))
 
@@ -252,7 +252,7 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
                         pygame.draw.rect(gameDisplay,blue,(Pzones[zone][0]*boxSize,Pzones[zone][1]*boxSize,boxSize,boxSize),3)
                     
                     pygame.display.update()
-                    clock.tick(environment_rows*3)
+                    clock.tick(15)
 
                     for event in pygame.event.get(): #closes window for that run
                         if event.type == pygame.QUIT:
@@ -321,7 +321,10 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
                     pygame.display.set_caption("S:{0}, X:{1}, Y:{2}".format(s, current_column_index, current_row_index))
                     # gameDisplay.blit(sValue, (10, 10))
                     pygame.display.update()
-                    clock.tick(environment_rows*3)
+                    if(visual == "C"):
+                        clock.tick(environment_rows*3)
+                    else:
+                        clock.tick(5)
 
                     for event in pygame.event.get(): #closes window for that run
                         if event.type == pygame.QUIT:
