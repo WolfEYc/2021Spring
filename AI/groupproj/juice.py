@@ -84,13 +84,14 @@ def stuv(): #sets STUV to correct values (read slide 10 in pptx)
     return biDec(S)
 
 def get_next_action(policy,s): #gets next action based on policy
+    global state_space
     if(policy == 'PGreedy'):
-        return np.argmax(q_values[current_column_index,current_row_index,X,s])
+        return np.argmax(q_values[current_column_index,current_row_index,X,s]) if state_space == 1 else np.argmax(q_values[current_column_index,current_row_index,X]) 
     if(policy == 'PRandom'):
         return np.random.randint(4)
     if(policy == 'PExploit'):
         if(np.random.random() < 0.8):
-            return np.argmax(q_values[current_column_index,current_row_index,X,s])
+            return np.argmax(q_values[current_column_index,current_row_index,X,s]) if state_space==1 else np.argmax(q_values[current_column_index,current_row_index,X]) 
         else:
             return np.random.randint(4)
 
@@ -200,8 +201,8 @@ def makeCustom():
     Q_reset()
 
 
-def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy='PExploit',sarsa=False,visual=None, showFinal = False, filename=None, outputArray=False): #runs for each expirement
-    global P,D,X,current_row_index,current_column_index,q_values,reward_avg,move_avg
+def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy='PExploit',sarsa=False,visual=None, showFinal = False, filename=None, outputArray=False, ): #runs for each expirement
+    global P,D,X,current_row_index,current_column_index,q_values,reward_avg,move_avg, state_space
     step = 0
     terminals = 0
     while step < steps and (terminals_allowed==-1 or terminals < terminals_allowed):
@@ -217,16 +218,30 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
             current_column_index, current_row_index = get_next_location(action_index)
             reward = fetch_rewards(current_column_index,current_row_index)
             rewards+=reward          
-            old_q_value = q_values[old_column_index,old_row_index,X,s,action_index]
+            
+            if(state_space==1):
+                old_q_value = q_values[old_column_index,old_row_index,X,s,action_index]
+            else:
+                old_q_value = q_values[old_column_index, old_row_index,X, action_index]
 
             if sarsa:
-                temporal_difference = reward + (discount_factor * q_values[current_column_index,current_row_index,X,s,get_next_action(policy,s)]) - old_q_value
+                if (state_space==1):
+                    temporal_difference = reward + (discount_factor * q_values[current_column_index,current_row_index,X,s,get_next_action(policy,s)]) - old_q_value
+                else:
+                    temporal_difference = reward + (discount_factor * q_values[current_column_index,current_row_index,X,get_next_action(policy,s)]) - old_q_value
             else:
-                temporal_difference = reward + (discount_factor * np.max(q_values[current_column_index,current_row_index,X,s])) - old_q_value
+                if (state_space==1):
+                    temporal_difference = reward + (discount_factor * np.max(q_values[current_column_index,current_row_index,X,s])) - old_q_value
+                else:
+                    temporal_difference = reward + (discount_factor * np.max(q_values[current_column_index,current_row_index,X])) - old_q_value
+
 
             new_q_value = old_q_value + (learning_rate * temporal_difference)
-            q_values[old_column_index, old_row_index, X, s, action_index] = new_q_value
-            
+            if(state_space==1):
+                q_values[old_column_index, old_row_index, X, s, action_index] = new_q_value
+            else:
+                q_values[old_column_index, old_row_index,X, action_index] = new_q_value
+
             if(reward == 13):
                 toggle_block(current_column_index,current_row_index)
             
@@ -252,7 +267,7 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
                         pygame.draw.rect(gameDisplay,blue,(Pzones[zone][0]*boxSize,Pzones[zone][1]*boxSize,boxSize,boxSize),3)
                     
                     pygame.display.update()
-                    clock.tick(15)
+                    clock.tick(environment_rows*3)
 
                     for event in pygame.event.get(): #closes window for that run
                         if event.type == pygame.QUIT:
@@ -267,10 +282,10 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
                         
                 if visual =="B" or visual == "C" and (not showFinal or step==steps):
                     gameDisplay.fill(black)
-                
+
                     for x in range(environment_rows):
                         for y in range(environment_columns):
-                            for actionInd in range(len(q_values[x,y,X,s])):
+                            for actionInd in range(len(q_values[x,y,X,s] if state_space==1 else q_values[x,y,X])):
                                 centerX = x * boxSize + boxSize/2
                                 centerY = y * boxSize + boxSize/2
                                 center_point = (centerX, centerY)
@@ -280,7 +295,10 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
                                 x_offset = 14 if actionInd==0 or actionInd==2 else 0
                                 leftOffset = 20 if actionInd == 3 else 0
                                 bottomOffset = 10 if actionInd == 2 else 0  
-                                action = q_values[x,y,X,s,actionInd]
+                                if(state_space==1):
+                                    action = q_values[x,y,X,s,actionInd]
+                                else: 
+                                    action = q_values[x,y,X,actionInd]
                                 # print(action)
                                 num = smallFont.render("{:.3f}".format(action),True,white)
                                 # need to get the x and y position relative to the center of the current block, let centerX,centerY = below calculation
@@ -324,7 +342,7 @@ def run(steps,terminals_allowed=-1,learning_rate=0.3,discount_factor=0.5,policy=
                     if(visual == "C"):
                         clock.tick(environment_rows*3)
                     else:
-                        clock.tick(5)
+                        clock.tick(10)
 
                     for event in pygame.event.get(): #closes window for that run
                         if event.type == pygame.QUIT:
@@ -369,11 +387,15 @@ def avgs(): #prints the report of each expirement and reinits report for next ex
     Q_reset()
 
 def Q_reset(): #resets the Q-table and World
-    global q_values,S,gameDisplay
+    global q_values,S,gameDisplay, state_space
     init()
     S = np.zeros((np.max([len(D),len(P)])))
     gameDisplay = pygame.display.set_mode((int(environment_columns*boxSize),int(environment_rows*boxSize)))
-    q_values = np.zeros((environment_columns,environment_rows,2, pow(2,len(S)), 4))
+    if(state_space==1):
+        q_values = np.zeros((environment_columns,environment_rows,2, pow(2,len(S)), 4))
+    else:
+        q_values = np.zeros((environment_columns, environment_rows, 2,4))
+
     
 def visualize_q_table(table):
     pass
@@ -425,37 +447,85 @@ pygame.display.set_caption('PD World')
 
 clock = pygame.time.Clock()
 
+state_space=1
+
 print('\nExpirement 1')
 
-print('\na.')
+print('\nas1.')
 run(steps=6000,policy='PRandom',showFinal=True, visual=None)
+state_space=2
 avgs()
 
-print('\nb.')
+print('\nas2')
+
+run(steps=6000,policy='PRandom',showFinal=True, visual=None)
+state_space=1
+avgs()
+
+print('\nbs1.')
+run(steps=500,policy='PRandom')
+run(steps=5500,policy='PGreedy',visual=None, filename="1b.png")
+state_space=2
+avgs()
+
+print('\nbs2.')
 run(steps=500,policy='PRandom')
 run(steps=5500,policy='PGreedy',visual="B", filename="1b.png")
+state_space=1
 avgs()
 
-print('\nc.')
+print('\ncs1.')
 run(steps=500,policy='PRandom',showFinal=True)
 run(steps=5500,visual="B")
+state_space=2
 avgs()
 
-print('\nExpirement 2')
+print('\ncs2.')
+
+run(steps=500,policy='PRandom',showFinal=True)
+run(steps=5500,visual="B")
+state_space=1
+avgs()
+
+print('\nExpirement 2s1')
 run(steps=500,policy='PRandom',sarsa=True)
 run(steps=5500,sarsa=True,visual="A")
+state_space=2
 avgs()
 
-print('\nExpirement 3')
+print('\nExpirement 2s2')
+run(steps=500,policy='PRandom',sarsa=True)
+run(steps=5500,sarsa=True,visual="A")
+state_space=1
+avgs()
+
+print('\nExpirement 3s1')
 run(steps=500,learning_rate=0.15,discount_factor=0.45,policy='PRandom')
 run(steps=5500,learning_rate=0.15,discount_factor=0.45,visual="B")
+state_space=2
 avgs()
 
-print('\nExpirement 4')
+print('\nExpirement 3s2')
+run(steps=500,learning_rate=0.15,discount_factor=0.45,policy='PRandom')
+run(steps=5500,learning_rate=0.15,discount_factor=0.45,visual="B")
+state_space=1
+avgs()
+
+print('\nExpirement 4s1')
 run(steps=500,policy='PRandom')
 run(steps=5500,terminals_allowed=3,visual="B")
 Pzones = [[1,3],[3,1]]
 run(steps=5500,terminals_allowed=3,visual="B")
+state_space=2
+Pzones = [[4,2],[1,3]]
+avgs()
+
+print('\nExpirement 4s2')
+run(steps=500,policy='PRandom')
+run(steps=5500,terminals_allowed=3,visual="B")
+Pzones = [[1,3],[3,1]]
+run(steps=5500,terminals_allowed=3,visual="B")
+state_space=1
 avgs()
 
 print('\nExpirement 5')

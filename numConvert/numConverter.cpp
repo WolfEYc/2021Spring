@@ -103,6 +103,9 @@ string biToDec(string bi){
         num+=letNum(bi[i])*c;   
     return (neg==0) ? to_string(num) : "-"+to_string(num);
 }
+
+
+
 int main(int argc, char **argv){
     try{
         string from = argv[1],to = argv[2], num = argv[3];    

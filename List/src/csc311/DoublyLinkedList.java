@@ -9,6 +9,7 @@ public class DoublyLinkedList<E> implements PositionalList<E> {
 
 	public DoublyLinkedList() {
 		// TODO Auto-generated constructor stub
+
 	}
 
 	@Override
