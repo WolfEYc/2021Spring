@@ -74,7 +74,11 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "strstream": "cpp",
+        "propagate_const": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp"
     },
     "terminal.integrated.shell.windows": "cmd.exe",
     "git.ignoreLimitWarning": true,

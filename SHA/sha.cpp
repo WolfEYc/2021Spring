@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "konstants.h"
+#include <thread>
 using namespace std;
 
 #define size 32
@@ -129,9 +130,10 @@ string fromFile(string file){
     while(in.get(temp)){
         out += temp;
     }
-    cout << out << endl;
+
     return out;
 }
+
 
 void convertInputToBinary(bool* &message, int& msgsize, string input){
     unsigned int mlen = input.length();
@@ -148,7 +150,8 @@ void convertInputToBinary(bool* &message, int& msgsize, string input){
     message = new bool[msgSize];
 
     for(unsigned int i = 0 ; i < mlen; i++){
-        int c = input[i];
+        int c = abs(input[i]);
+
         bool byte [8];
 
         biDec(byte,8,c);
@@ -319,20 +322,10 @@ string biHex(bool** bits){
     return ret;
 }
 
-int main(int argc, char** argv){
-    
-    string input;
+void Sha256(string input, string &output){
     int msgSize, numBlocks;
     bool* msgbits;
     bool** msgblocks;
-
-    if(argc==2){
-        input = argv[1];
-    }
-
-    if(input.find(".txt")!=string::npos && input.find(".txt")==input.length()-4){ //has .txt at end
-        input = fromFile(input);
-    }
 
     convertInputToBinary(msgbits,msgSize,input);
 
@@ -393,9 +386,83 @@ int main(int argc, char** argv){
     }
     cout << endl;*/
 
-    string hexSHA = biHex(H0);
+    output = biHex(H0);   
+   
+}
+
+char genRandom(int stringLength)  // Random string generator function.
+{
+    return alphanum[rand() % stringLength];
+}
+
+string makeRandom(int stringLength){
+    string out = "";
+    for(int i = 0; i < stringLength; i++)
+        out+=genRandom(stringLength);
+    return out;
+}
+
+int main(int argc, char** argv){
     
-    cout << hexSHA << endl;
+    string input;
+    int diff;
+
+    if(argc==2){
+        input = argv[1];
+    }else if (argc == 3){
+        input = argv[1];
+        diff = stoi(argv[2]);
+    }
+
+
+    if(input == "mine"){
+        int stringLength = sizeof(alphanum) - 1;
+        int cores = thread::hardware_concurrency();               
+        string outputs[cores], inputs [cores];
+        vector<thread> threads;
+        while(true){
+
+            for(int i = 0; i < cores; i++){
+                inputs [i] = makeRandom(stringLength);
+                threads.push_back(thread(Sha256,inputs[i],outputs[i]));
+            }
+
+            for(auto &th: threads){
+                th.join();
+            }
+            
+            for(int i = 0; i < cores; i++)
+                cout << inputs[i] << " " << outputs[i] << endl;
+            
+
+            for(int i = 0; i<cores; i++){
+                if(outputs[i].find_first_not_of('0')>=diff){
+                    cout << endl << endl
+                    << "found viable hash!" << endl<< endl
+                    << "key: " << inputs[i] << endl
+                    << "hash: " << outputs[i] << endl << endl;
+                }
+            }
+        }
+    }
+
+    if(input.find(".txt")!=string::npos && input.find(".txt")==input.length()-4){ //has .txt at end
+        input = fromFile(input);
+    }
+
+    if(input.find(".png")!=string::npos && input.find(".png")==input.length()-4){ //has .txt at end
+        input = fromFile(input);
+    }
+
+    if(input.find(".jpg")!=string::npos && input.find(".jpg")==input.length()-4){ //has .txt at end
+       input = fromFile(input);
+    }
+
+    string output;
+
+    Sha256(input,output);
+
+    cout << output << endl;
 
     return 0;
 

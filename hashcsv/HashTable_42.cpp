@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : HashTable.cpp
-// Author      : John Watson
+// Author      : Mark Maddon
 // Version     : 1.0
 // Copyright   : Copyright © 2017 SNHU COCE
 // Description : Hello World in C++, Ansi-style
@@ -12,7 +12,7 @@
 #include <string> // atoi
 #include <time.h>
 #include <vector>
-#include "CSVparser.hpp"
+#include "CSVparser.cpp"
 
 using namespace std;
 
@@ -49,7 +49,6 @@ class HashTable {
 private:
     // FIXME (1): Define structures to hold bids    
     unsigned int hash(int key);
-    unsigned int getIndex(string bidId);
     Bid table[DEFAULT_SIZE];
 
 public:
@@ -136,10 +135,14 @@ void HashTable::PrintAll() {
 void HashTable::Remove(string bidId) {
     // FIXME (7): Implement logic to remove a bid
     Bid bid;
-    unsigned int hashkey = getIndex(bidId);
-    if(hashkey!=DEFAULT_SIZE)
-        table[hashkey] = bid;
-    
+    int key = stoi(bidId);
+
+    for(int i = 0;i<DEFAULT_SIZE;i++)
+        if(table[(key+i) % DEFAULT_SIZE].bidId == bidId){
+            table[(key+i) % DEFAULT_SIZE] = bid;
+            return;
+        }
+
 }
 
 /**
@@ -150,18 +153,13 @@ void HashTable::Remove(string bidId) {
 Bid HashTable::Search(string bidId) {
     Bid bid;
     // FIXME (8): Implement logic to search for and return a bid
-    unsigned int hashkey = getIndex(bidId);
-    if (hashkey!=DEFAULT_SIZE)
-        return table[hashkey];   
-    return bid;
-}
-
-unsigned int HashTable::getIndex(string bidId){
     int key = stoi(bidId);
+
     for(int i = 0;i<DEFAULT_SIZE;i++)
         if(table[(key+i) % DEFAULT_SIZE].bidId == bidId)
-            return (key+i) % DEFAULT_SIZE;
-    return DEFAULT_SIZE;
+            return table[(key+i) % DEFAULT_SIZE];
+
+    return bid;
 }
 
 //============================================================================

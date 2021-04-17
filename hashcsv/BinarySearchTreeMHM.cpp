@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : BinarySearchTree.cpp
-// Author      : JYour name
+// Author      : Mark Maddon
 // Version     : 1.0
 // Copyright   : Copyright © 2017 SNHU COCE
 // Description : Hello World in C++, Ansi-style
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "CSVparser.hpp"
+#include "CSVparser.cpp"
 
 using namespace std;
 
