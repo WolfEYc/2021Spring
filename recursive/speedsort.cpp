@@ -112,7 +112,7 @@ int main(){
 
     auto startmine = high_resolution_clock::now();
 
-    sort(myarr,n);
+    //sort(myarr,n);
 
     auto endmine = high_resolution_clock::now();
 
